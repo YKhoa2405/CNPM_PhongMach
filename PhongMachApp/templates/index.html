@@ -1,0 +1,98 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Trang chủ{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid medicine">
+    <h2 class="title">Tra cứu thông tin thuốc</h2>
+    <p>Chính thống - minh bạch - hiệu quả</p>
+    <div class="search-medicine">
+        <form class="form-inline">
+            <div class="input-group">
+                <input class="form-control" type="text" name ="keywordmedi" placeholder="Tìm kiếm các loại thuốc...">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="submit">Tìm kiếm</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="info-medicine">
+        {% if medicines %}
+        <div class="row ">
+            {% for m in medicines %}
+            <div class="col-sm-2">
+                <div class="card" style="width:100%">
+                    <img class="card-img-top" src="{{ m.image }}" alt="Card image" style="width:100%; height:250px;">
+                    <p class="card-title">{{ m.name }}</p>
+
+                    <p class="card-content">Giá: {{"{:,.1f}".format(m.price)}} VND</p>
+                    <p class="card-content">Kho: {{ m.amount}}</p>
+                    <div class="card-detail"><a style="width:100%; margin-top:10px;" href="{{ url_for('medicine_detail', medicine_id=m.id) }}" class="btn btn-info">Xem chi tiết</a></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>Không có sản phẩm nào !!</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="top-image">
+    <!-- Top image content goes here -->
+    <img src="{{ url_for('static', filename='image/hospital.png') }}" alt="Top Image">
+    <div class="title">
+        <h1>Đặt lịch khám trực tuyến</h1>
+        <p>Đặt khám với hơn 50 bác sĩ trên HKN để có số thứ tự và ngày khám trước.</p>
+        <div class="bar-search">
+            <form class="form-inline" action="/action_page.php">
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Tìm kiếm chuyên khoa, các loại thuốc...">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="title-option">
+        <div class="row">
+            <div class="col-sm-3">45+<br>Bác sĩ hoạt động</div>
+            <div class="col-sm-3">5+<br>Cở sở tại TP.Hồ Chí Minh</div>
+            <div class="col-sm-3">30+<br>Chuyên khoa</div>
+            <div class="col-sm-3">25+<br>Năm hoạt động</div>
+        </div>
+    </div>
+</div>
+
+<div class="security" style="text-align:center">
+    <div class="container">
+        <h2 class="title">Bảo mật dữ liệu</h2>
+        <p>An toàn dữ liệu của bạn là ưu tiên hàng đầu của chúng tôi</p>
+        <div class="row">
+            <div class="col-sm-3">
+                <img src="{{ url_for('static', filename='image/badge.png') }}" alt="Top Image">
+                <h3>Hạ tầng đạt tiêu chuẩn ISO 27001:2013</h3>
+            </div>
+            <div class="col-sm-3">
+                <img src="{{ url_for('static', filename='image/info.png') }}" alt="Top Image">
+                <h3>Thông tin sức khỏe được bảo mật theo quy chuẩn HIPAA</h3>
+            </div>
+            <div class="col-sm-3">
+                <img src="{{ url_for('static', filename='image/member.png') }}" alt="Top Image">
+                <h3>Thành viên VNISA</h3></div>
+            <div class="col-sm-3">
+                <img src="{{ url_for('static', filename='image/security.png') }}" alt="Top Image">
+                <h3>Pentest định kì hằng năm</h3></div>
+        </div>
+        <p class="content-footer">Với nhiều năm kinh nghiệm trong lĩnh vực Y tế, chúng tôi hiểu rằng, dữ liệu sức khỏe
+            của bạn chỉ thuộc về
+            bạn, YouMed tuân thủ các chính sách bảo mật dữ liệu cao nhất trên thế giới.</p>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Chi tiết sản phẩm{% endblock %}
+
+{% block content %}
+<div class="container-detail">
+    <div class="row">
+        <div class="col-sm-6">
+            <img class="image-detail" src="{{ url_for('static', filename='image/ou.jpg') }}" alt="Card image">
+        </div>
+        <div class="col-sm-6">
+            <div class="content-detail">
+                <p class="title-detail">Viên uống Acnacare Capsules giảm tiết bã nhờn, hỗ trợ trị mụn (hộp 30 viên)</p>
+                <p>Mã sản phẩm: xxxxxxx</p>
+                <p class="price-detail">89.000₫</p>
+                <p>Thành phần: 500mg</p>
+                <div class="description">
+                    <p>Viên uống Acnacare là một sản phẩm độc đáo được phân phối bởi công ty TNHH MEGA We care, được
+                        thiết kế
+                        đặc biệt để giải quyết các vấn đề về mụn trứng cá từ nhẹ đến trung bình.
+
+                        Sản phẩm chứa các thành phần tự nhiên như kẽm, vitamin C và các chất dinh dưỡng quan trọng khác,
+                        giúp
+                        làm dịu và điều trị mụn, đồng thời duy trì làn da khỏe mạnh.
+
+                        Viên uống Acnacare có dạng viên nén, được đóng gói trong hộp chứa 3 vỉ x 10 viên, cho phép người
+                        dùng dễ
+                        dàng sử dụng hàng ngày theo hướng dẫn để đạt hiệu quả tốt nhất. Sản phẩm không chỉ giúp giảm
+                        tiết bã
+                        nhờn và làm dịu da, mà còn hỗ trợ trong quá trình điều trị và trị mụn hiệu quả.
+
+                        Hãy trải nghiệm Acnacare để có làn da khỏe mạnh và tự tin hơn!</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}

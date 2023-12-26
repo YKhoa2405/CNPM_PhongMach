@@ -1,0 +1,80 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Đặt lịch khám{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center text-success">Đặt lịch khám</h1>
+
+    {% if err_msg %}
+    <div class="alert alert-danger">
+        <h2>{{ err_msg }}</h2>
+    </div>
+    {% endif %}
+
+    <form method="post">
+        <div class="form-group">
+            <label for="name">Họ và tên:</label>
+            <input type="text" placeholder="Họ và tên..."
+                   name="name" class="form-control" required id="name"
+                   value="{{ current_user.name }}"/>
+        </div>
+        <div class="form-group">
+            <label for="cccd">CCCD/CMND:</label>
+            <input type="text" placeholder="Nhập CCCD/CMND"
+                   name="cccd" class="form-control" required id="cccd"/>
+        </div>
+
+        <div class="form-group">
+            <div class="form-check-inline">
+                <label class="form-check-label" style="padding-right:20px;">
+                    Giới tính:
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="optradio" value="Nam">Nam
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="optradio" value="Nữ">Nữ
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="optradio" value="Khác">Khác
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="text" placeholder="Số điện thoại..."
+                   name="sdt" class="form-control" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="birthday">Ngày sinh:</label>
+            <input type="date"
+                   name="birthday" class="form-control" required id="birthday"/>
+        </div>
+        <div class="form-group">
+            <label for="address">Địa chỉ:</label>
+            <input type="text" placeholder="Địa chỉ..."
+                   name="address" class="form-control" required id="address"/>
+        </div>
+
+        <div class="form-group">
+            <label for="calendar">Ngày khám:</label>
+            <input type="date"
+                   name="calendar" class="form-control" required id="calendar"/>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Đăng ký lịch khám"
+                   class="btn btn-success"/>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
