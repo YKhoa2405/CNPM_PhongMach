@@ -6,14 +6,15 @@
     <!--icon-->
     <script src="https://kit.fontawesome.com/6f688f08b3.js" crossorigin="anonymous"></script>
     <!--css-->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/staff.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <!--JS-->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/addToCart.js') }}"></script>
 
     <!--query-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!--    icon-->
     <script src="https://kit.fontawesome.com/6f688f08b3.js" crossorigin="anonymous"></script>
     <!--bootstrap-->
@@ -33,13 +34,15 @@
     {% block css %} {% endblock %}
 </head>
 <body>
-{% block header %}
-{% include 'layout/header.html' %}
-{% endblock %}
-{% block content %} {% endblock %}
 
-{% block footer %}
-{% include 'layout/footer.html' %}
-{% endblock %}
+<div class="container-fluid">
+    <div class="row row_header">
+        {% block header %}
+        {% include 'layout/header_staff.html' %}
+        {% endblock %}
+        <!--body-->
+        {% block content %} {% endblock %}
+    </div>
+</div>
 </body>
 </html>

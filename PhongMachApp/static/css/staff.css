@@ -1,0 +1,41 @@
+body, h1, h2, p, ul, li {
+    margin: 0;
+    height:100%
+    padding: 0;
+}
+
+/*header*/
+.row_header{
+    height: 100%;
+}
+
+/*header*/
+.header_staff {
+    background-color: #17a2b8;
+}
+.header_staff .nav-item{
+    padding:10px;
+    border-bottom:1px solid #fff;
+    margin: 0;
+}
+.header_staff .navbar-nav{
+    width:100%;
+    text-align:center;
+}
+.header_staff .nav-item a{
+    color:#fff;
+    font-weight:bold;
+    font-size:18px;
+}
+
+/*search*/
+.content_staff .form-inline .input-group{
+    width: 100% !important;
+    margin:20px;
+}
+
+
+.btn_addmedi .btn{
+float:right;
+margin:20px 0px 0px 10px;
+}

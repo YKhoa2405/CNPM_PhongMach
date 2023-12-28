@@ -1,7 +1,5 @@
 /*top image*/
 
-
-
 .top-image {
     position: relative;
     text-align: center;
@@ -72,7 +70,17 @@
 }
 
 /*thuóc*/
-
+.info-medicine .card{
+    width:100%;
+    border: 2px solid #ddd; /* Add a subtle border */
+    border-radius: 8px; /* Add rounded corners */
+    overflow: hidden; /* Hide any content that overflows the card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+.info-medicine .card:hover {
+    transform: scale(1.03); /* Enlarge the card slightly on hover */
+}
 .info-medicine .card-title{
     font-weight: bold;
     margin:10px 0px 2px;
@@ -85,18 +93,17 @@
 
 /*detail*/
 .container-detail {
-    text-align: left;
     margin: 10px 50px;
     padding: 20px;
 }
 
-
 .container-detail .image-detail{
 width:100%;
-height:auto;}
+height:500px;
+object-fit: contain;}
 
 .container-detail .title-detail{
-font-size:18px;
+font-size:20px;
 font-weight:bold;
 }
 
@@ -106,8 +113,25 @@ font-size:30px;
 font-weight:bold;
 }
 
-.container-detail .description{
-display:inline;
+.content-detail p{
+font-size:17px;}
+
+/*Calendar*/
+.card-calendar{
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 5px 0px 0px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card-date{
+    font-weight:bold;
+    font-size:17px;
+}
+.card-calendar:hover {
+    transform: scale(1.03);
 }
 
 

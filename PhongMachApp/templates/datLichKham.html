@@ -8,7 +8,7 @@
 
     {% if err_msg %}
     <div class="alert alert-danger">
-        <h2>{{ err_msg }}</h2>
+        <h3>{{ err_msg }}</h3>
     </div>
     {% endif %}
 
@@ -50,7 +50,8 @@
 
         <div class="form-group">
             <input type="text" placeholder="Số điện thoại..."
-                   name="sdt" class="form-control" required/>
+                   name="sdt" class="form-control" required
+                   value="{{ current_user.phone }}"/>
         </div>
 
         <div class="form-group">
@@ -65,9 +66,16 @@
         </div>
 
         <div class="form-group">
-            <label for="calendar">Ngày khám:</label>
-            <input type="date"
-                   name="calendar" class="form-control" required id="calendar"/>
+            <label>Ngày khám:</label>
+            <div class="row row-calendar ">
+                <div class="col-sm-2">
+                    <div class="card-calendar" style="width:100%">
+                        <p class="card-date">Thứ 5, ngày 30/12/2023</p>
+                        <p class="card-count">Chỗ trống: <b style="color:green">20</b></p>
+                        <p class="card-count">Giá: <b style="color:green">100.000 VND</b></p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="form-group">

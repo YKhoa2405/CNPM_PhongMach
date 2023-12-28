@@ -8,8 +8,7 @@
     </script>
 
 
-$(document).ready(function(){
-  $('.row-slider').slick({
-    setting-name: setting-value
-  });
-});
+function addtocart(){
+    event.preventDefault()
+    alert('fsdfs')
+}

@@ -1,6 +1,6 @@
 
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, Enum,Float, ForeignKey, Date, DateTime
+from sqlalchemy import Column, String, Integer, Enum, Float, ForeignKey, Date, DateTime, Table
 from sqlalchemy.orm import relationship
 from PhongMachApp import db, app
 from flask_login import UserMixin
@@ -19,6 +19,7 @@ class User(Basemodel, UserMixin):
     name = Column(String(50),nullable=False)
     email = Column(String(50),nullable=False, unique=True)
     password = Column(String(50), nullable=False)
+    phone = Column(String(50), nullable=False, unique=True)
     user_role = Column(Enum(UserRole), default=UserRole.USER)
 
 class DatLichKham(Basemodel):
@@ -29,6 +30,21 @@ class DatLichKham(Basemodel):
     birthday = Column(Date, nullable=False)
     address = Column(String(255), nullable=False)
     calendar = Column(Date, nullable=False)
+
+promissory_medicine = db.Table(#bangr trung gian thuốc và phiếu khám
+    'promissory_medicine',
+    db.Column('promissory_id', Integer, ForeignKey('promissory_note.id'), primary_key=True),
+    db.Column('medicine_id', db.Integer, db.ForeignKey('medicine.id'), primary_key=True),
+    db.Column('quantiny', db.Integer),
+    db.Column('use_number', db.Integer)
+)
+
+class Promissory_note(Basemodel):#Phiếu khám
+    ngay_kham = Column(Date, nullable=False)
+    trieu_chung = Column(String(100), nullable=False)
+    chan_doan = Column(String(100), nullable=False)
+    medicines = relationship('Medicine', secondary=promissory_medicine, backref='promissory_note', lazy=True)
+
 
 
 class MedicineUnit(Basemodel):
@@ -48,7 +64,7 @@ class Medicine(Basemodel):
     expiration_date = Column(DateTime, default=datetime.now())
     component = Column(String(200), default='')
     price = Column(Integer, default=0.0)
-    description = Column(String(500), default='')
+    description = Column(String(1000), default='')
     # # foreign keys
     medicineUnit_id = Column(Integer, ForeignKey(MedicineUnit.id), nullable=False)
 

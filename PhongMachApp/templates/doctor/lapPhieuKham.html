@@ -1,0 +1,125 @@
+{% extends 'layout/base_staff.html' %}
+
+{% block title %}Lập phiếu khám{% endblock %}
+
+{% block content %}
+<div class="col-md-9 content_staff">
+    <div class="container-fluid medicine">
+        <h2 class="title">Tra cứu thông tin thuốc</h2>
+        <p>Chính thống - minh bạch - hiệu quả</p>
+        <div class="search-medicine">
+            <form class="form-inline">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="keywordmedi" placeholder="Tìm kiếm các loại thuốc...">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="submit">Tìm kiếm</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% if kw %}
+        <div class="info-medicine">
+            {% if medicines %}
+            <div class="row">
+                {% for m in medicines %}
+                <div class="col-sm-2">
+                    <div class="card">
+                        <img class="card-img-top" src="{{ m.image }}" alt="Card image"
+                             style="width:100%; height:200px; object-fit: contain;">
+                        <p class="card-title">{{ m.name|truncate(15) }}</p>
+
+                        <p class="card-content">Giá: {{"{:,.1f}".format(m.price)}} VND</p>
+                        <p class="card-content">Kho: {{ m.amount}}</p>
+                        <div class="card-detail">
+                            <a style="width:100%; margin-top:10px;" href="#"
+                               class="btn btn-info"
+                               onclick="addToCart({{ m.id }} , '{{ m.name }}', {{ m.medicine_unit }})">Thêm thuốc
+                            </a></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <h5>Không có sản phẩm nào !!</h5>
+            {% endif %}
+        </div>
+        {% endif%}
+    </div>
+
+    <div class="container">
+        <h1 class="text-center text-success">Lập phiếu khám</h1>
+        {% if err_msg %}
+        <div class="alert alert-danger">
+            <h1>{{ err_msg }}</h1>
+        </div>
+        {% endif %}
+        <form method="post">
+            <div class="form-group d-flex">
+                <input type="text" placeholder="Họ và tên..."
+                       name="name" class="form-control"/>
+            </div>
+            <div class="form-group d-flex">
+                <input type="date" placeholder="Nhập ngày khám..."
+                       name="date" class="form-control"/>
+            </div>
+            <div class="form-group d-flex">
+                <input type="text" placeholder="Triệu chứng"
+                       name="symptom" class="form-control"/>
+            </div>
+            <div class="form-group d-flex">
+                <input type="text" placeholder="Dự đoán loại bệnh"
+                       name="forecast" class="form-control"/>
+            </div>
+            <!--            kiểm tra khác null-->
+            <!--            {% if 'cart' in session and session['cart'] %}-->
+            <div>
+                <div class="row" style="text-align:center; font-weight:bold; font-size:14px;">
+                    <div class="col-3">
+                        <p>Tên thuốc</p>
+                    </div>
+                    <div class="col-1">
+                        <p>Đơn vị</p>
+                    </div>
+                    <div class="col-1">
+                        <p>Số lượng</p>
+                    </div>
+                    <div class="col-6">
+                        <p>Cách dùng</p>
+                    </div>
+                    <div class="col-1">
+                    </div>
+                </div>
+
+                {% for c in session['cart'].values() %}
+                <div class="row">
+                    <div class="col-3">
+                        <input type="text" class="form-control" name="name_medi" value="{{ c.name }}">
+                    </div>
+                    <div class="col-1">
+                        <input type="text" class="form-control" name="unit_medi" value="{{ c.medicine_unit }}">
+                    </div>
+                    <div class="col-1">
+                        <input type="number" class="form-control" name="count_medi">
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control" name="description_medi">
+                    </div>
+                    <div class="col-1">
+                        <i class="fa fa-trash" style="color: #ff0000;"></i>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!--            {% else %}-->
+            <!--            <p>Không có đơn thuốc nào</p>-->
+            <!--            {% endif %}-->
+        </form>
+
+        <div class="btn_addmedi">
+            <button type="button" class="btn btn-success">Tạo phiếu</button>
+            <button type="button" class="btn btn-primary" id="addMedicineBtn">Thêm thuốc</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,41 +1,42 @@
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <!-- Brand/logo -->
-        <a class="navbar-brand" href="#">
-            <img src="{{ url_for('static', filename='image/logo.png') }}" alt="logo" class="rounded">
-        </a>
+<nav class="navbar navbar-expand-sm  navbar-light">
+    <!-- Brand/logo -->
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='image/logo.png') }}" alt="logo" class="rounded">
+    </a>
 
-        <!-- Links -->
-        <ul class="navbar-nav mr-auto"> <!-- Các mục menu ở bên trái -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('index') }}">Trang chủ</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('datLichKham') }}">Đăng ký lịch khám</a>
-            </li>
-        </ul>
+    <!-- Links -->
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link{% if current_page == 'index' %} active{% endif %}" href="{{ url_for('index') }}">Trang chủ</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{% if current_page == 'datLichKham' %} active{% endif %}"
+               href="{{ url_for('datLichKham') }}">Đăng ký lịch khám</a>
+        </li>
+    </ul>
 
-        <!-- Nút đăng nhập ở bên phải -->
+    <!-- Nút đăng nhập ở bên phải -->
 
 
-        <ul class="navbar-nav ml-auto">
-            {% if current_user.is_authenticated %}
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" style="color:white;" href="#" id="navbardrop" data-toggle="dropdown"><i class="fa fa-user"></i> {{ current_user.name }}</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">Lịch sử thanh toán</a>
-                    <a class="dropdown-item" href="#">Lịch khám</a>
-                    <a class="dropdown-item" href="#">Hồ sơ</a>
-                    <a class="dropdown-item" href="{{ url_for('logout') }}">Đăng xuất</a>
-                </div>
-            </li>
+    <ul class="navbar-nav ml-auto">
+        {% if current_user.is_authenticated %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" style="color:white;" href="#" id="navbardrop" data-toggle="dropdown"><i
+                    class="fa fa-user"></i> {{ current_user.name }}</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Lịch sử thanh toán</a>
+                <a class="dropdown-item" href="#">Lịch khám</a>
+                <a class="dropdown-item" href="#">Hồ sơ</a>
+                <a class="dropdown-item" href="{{ url_for('logout') }}">Đăng xuất</a>
+            </div>
+        </li>
 
-            {% else %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('user_login') }}">
-                    <button type="button" class="btn btn-outline-success">Đăng nhập</button>
-                </a>
-            </li>
-            {% endif %}
-        </ul>
-
-    </nav>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('user_login') }}">
+                <button type="button" class="btn btn-success">Đăng nhập</button>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>

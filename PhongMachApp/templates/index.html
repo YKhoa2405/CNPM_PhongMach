@@ -10,7 +10,7 @@
     <div class="search-medicine">
         <form class="form-inline">
             <div class="input-group">
-                <input class="form-control" type="text" name ="keywordmedi" placeholder="Tìm kiếm các loại thuốc...">
+                <input class="form-control" type="text" name="keywordmedi" placeholder="Tìm kiếm các loại thuốc...">
                 <div class="input-group-append">
                     <button class="btn btn-success" type="submit">Tìm kiếm</button>
                 </div>
@@ -20,24 +20,38 @@
 
     <div class="info-medicine">
         {% if medicines %}
-        <div class="row ">
+        <div class="row">
             {% for m in medicines %}
             <div class="col-sm-2">
-                <div class="card" style="width:100%">
-                    <img class="card-img-top" src="{{ m.image }}" alt="Card image" style="width:100%; height:250px;">
-                    <p class="card-title">{{ m.name }}</p>
+                <div class="card">
+                    <img class="card-img-top" src="{{ m.image }}" alt="Card image"
+                         style="width:100%; height:250px; object-fit: contain;">
+                    <p class="card-title">{{ m.name|truncate(20) }}</p>
 
                     <p class="card-content">Giá: {{"{:,.1f}".format(m.price)}} VND</p>
                     <p class="card-content">Kho: {{ m.amount}}</p>
-                    <div class="card-detail"><a style="width:100%; margin-top:10px;" href="{{ url_for('medicine_detail', medicine_id=m.id) }}" class="btn btn-info">Xem chi tiết</a></div>
+                    <div class="card-detail"><a style="width:100%; margin-top:10px;"
+                                                href="{{ url_for('medicine_detail', medicine_id=m.id) }}"
+                                                class="btn btn-info">Xem chi tiết</a></div>
                 </div>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <p>Không có sản phẩm nào !!</p>
+        <h5>Không có sản phẩm nào !!</h5>
         {% endif %}
     </div>
+    <div style="justify-content: center; display: flex; margin-top:15px;">
+        <ul class="pagination">
+            {% for idx in range(1, pages+1) %}
+            <li class="page-item ">
+                <a class="page-link" href="{{ url_for('index', page=idx) }}">{{ idx }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+
 </div>
 
 <div class="top-image">
@@ -46,16 +60,16 @@
     <div class="title">
         <h1>Đặt lịch khám trực tuyến</h1>
         <p>Đặt khám với hơn 50 bác sĩ trên HKN để có số thứ tự và ngày khám trước.</p>
-        <div class="bar-search">
-            <form class="form-inline" action="/action_page.php">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Tìm kiếm chuyên khoa, các loại thuốc...">
-                    <div class="input-group-append">
-                        <button class="btn btn-success" type="submit">Search</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+<!--        <div class="bar-search">-->
+<!--            <form class="form-inline" action="/action_page.php">-->
+<!--                <div class="input-group">-->
+<!--                    <input class="form-control" type="text" placeholder="Tìm kiếm chuyên khoa, các loại thuốc...">-->
+<!--                    <div class="input-group-append">-->
+<!--                        <button class="btn btn-success" type="submit">Search</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
     </div>
 
     <div class="title-option">
@@ -93,6 +107,5 @@
             bạn, YouMed tuân thủ các chính sách bảo mật dữ liệu cao nhất trên thế giới.</p>
     </div>
 </div>
-
 
 {% endblock %}
