@@ -1,10 +1,11 @@
 # Tuơng tác với csdl
 from datetime import datetime
-from PhongMachApp import app, db
-from PhongMachApp.models import User, DatLichKham, Medicine, MedicineUnit
+
+from PhongMachApp import app, db, sms
+from PhongMachApp.models import User, Appointment, Medicine, MedicineUnit
 # Băm mật khẩu
 import hashlib
-
+import vonage
 
 def add_user(name, email, password, phone, **kwargs):
     # password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
@@ -19,7 +20,7 @@ def add_user(name, email, password, phone, **kwargs):
 def add_lich_kham(name, cccd, gender, sdt, birthday, address, calendar):
     # birthday = datetime.strptime(birthday, '%d-%m-%Y').date()
     # calendar = datetime.strptime(calendar, '%d-%m-%Y').date()
-    datLichKham = DatLichKham(
+    datLichKham = Appointment(
         name=name.strip(),
         cccd=cccd.strip(),
         gender=gender.strip(),
@@ -66,3 +67,42 @@ def get_user_by_id(user_id):
 
 def get_medicine_by_id(medicine_id):
     return Medicine.query.get(medicine_id)
+
+
+# y tas
+def get_patient_phone_number(patient_id):
+    patient = Appointment.query.get(patient_id)
+    if patient:
+        return patient.sdt
+    return None
+
+
+def send_appointment_date_to_patient(patient_phone_number, appointment_date):
+    message = (f"Phong kham HNK thong bao ngay kham benh cua ban la {appointment_date}.")
+
+    # Gửi tin nhắn đến số điện thoại bệnh nhân
+    response = sms.send_message({
+        'from': 'Vonage APIs',
+        'to': patient_phone_number,
+        'text': message,
+        'type': 'unicode'
+    })
+
+    if response['messages'][0]['status'] == '0':
+        print(f"Message sent successfully to {patient_phone_number}.")
+    else:
+        print(f"Message to {patient_phone_number} failed with error: {response['messages'][0]['error-text']}")
+
+
+def format_date(input_date):
+    # Chuyển đổi ngày từ chuỗi "YYYY-MM-DD" sang đối tượng datetime
+    formatted_date = datetime.strptime(input_date, "%Y-%m-%d")
+
+    # Định dạng lại ngày thành "Ngày tháng Năm"
+    result_date = formatted_date.strftime("%d-%m-%Y")
+
+    return result_date
+
+def get_patient_name(patient_id):
+    patient = Appointment.query.filter_by(id=patient_id).first()
+    return patient.name if patient else None
