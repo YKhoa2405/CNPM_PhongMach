@@ -272,8 +272,8 @@ def create_appointment_list(user_id=1):
                 # Cập nhật trạng thái has_appointment_list của bệnh nhân
 
                 # Gửi tin nhắn thông báo đến bệnh nhân (uncomment nếu cần)
-                patient_phone_number = utils.get_patient_phone_number(patient_id)
-                utils.send_appointment_date_to_patient(patient_phone_number, appointment_date)
+                # patient_phone_number = utils.get_patient_phone_number(patient_id)
+                # utils.send_appointment_date_to_patient(patient_phone_number, appointment_date)
 
         db.session.commit()
         session.pop('selected_patients', None)
