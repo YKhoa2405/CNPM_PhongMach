@@ -3,122 +3,42 @@
     <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
         <div>
             <img class="img-sidebar container"
-                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNrzqG2zI9_ElVJ0Pu5271abCmJHaY2f3t4g&usqp=CAU">
+                 src="https://png.pngtree.com/template/20210318/ourlarge/pngtree-medical-logo-template-image_501141.jpg">
         </div>
-        <ul class="sidebar-item nav nav-pills flex-column pt-5 mb-sm-auto align-items-center align-items-sm-start"
+        <ul class="sidebar-item nav nav-pills flex-column pt-2 mb-sm-auto align-items-center align-items-sm-start"
             id="menu">
             <li>
                 <a href="/show_result" class="nav-link px-0 align-middle">
                     Danh sách bệnh nhân</a>
             </li>
             <li>
-                <a href="#" class="nav-link px-0 align-middle">
+                <a href="#" class="  nav-link px-0 align-middle">
                     Lập phiếu khám</a>
             </li>
             <li>
-                <a href="#" class="nav-link px-0 align-middle">
-                    Đăng ký lịch khám </a>
+                <a href="#" class=" btn-dkkham nav-link px-0 align-middle" data-bs-toggle="modal" data-bs-target="#myModal">
+                    Đăng ký khám </a>
             </li>
             <li>
-                <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle ">
+                <a href="#submenu2"  class="nav-link px-0 align-middle ">
                     Xem lịch sử bệnh nhân</a>
             </li>
             <li>
-                <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                    Products</a>
+                <a href="/show_result"  class="nav-link px-0 align-middle">
+                    Lập danh sách khám</a>
 
             </li>
             <li>
-                <a href="#" class="nav-link px-0 align-middle">
-                    Customers </a>
+                <a href="{{ url_for('logout') }}" class="nav-link px-0 align-middle">
+                    Đăng xuất </a>
             </li>
             <li><!-- Button to Open the Modal -->
-                <button type="button " class="btn btn-primary btn-dkkham" data-bs-toggle="modal"
-                        data-bs-target="#myModal">
-                    Đăng kí lịch khám
-                </button>
+<!--                <button class="btn  btn-dkkham" data-bs-toggle="modal" data-bs-target="#myModal">-->
+<!--                    Đăng kí lịch khám-->
+<!--                </button>-->
+                <br>
                 {% include 'nurse/modal_dkk.html' %}
-                <!--                &lt;!&ndash; The Modal &ndash;&gt;-->
-                <!--                <div class="modal " id="myModal">-->
-                <!--                    <div class="modal-dialog  ">-->
-                <!--                        &lt;!&ndash; Modal content &ndash;&gt;-->
-                <!--                        <div class="modal-content bg-success">-->
-                <!--                            <form action="http://localhost:5555/result" method="post">-->
-                <!--                                <div class="modal-header">-->
-                <!--                                    <h4 class="modal-title">Nhập thông tin bệnh nhân</h4>-->
-                <!--                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
-                <!--                                </div>-->
 
-                <!--                                <div class="form-group pt-3">-->
-                <!--                                    <label for="name">Họ và tên:</label>-->
-                <!--                                    <input type="text" placeholder="Họ và tên..."-->
-                <!--                                           name="name" class="form-control" required id="name"-->
-                <!--                                           value="{{ current_user.name }}"/>-->
-                <!--                                </div>-->
-                <!--                                <div class="form-group pt-3">-->
-                <!--                                    <label for="cccd">CCCD/CMND:</label>-->
-                <!--                                    <input type="text" placeholder="Nhập CCCD/CMND"-->
-                <!--                                           name="cccd" class="form-control" required id="cccd"/>-->
-                <!--                                </div>-->
-
-                <!--                                <div class="form-group pt-3">-->
-                <!--                                    <div class="form-check-inline">-->
-                <!--                                        <label class="form-check-label" style="padding-right:20px;">-->
-                <!--                                            Giới tính:-->
-                <!--                                        </label>-->
-                <!--                                    </div>-->
-                <!--                                    <div class="form-check-inline pt-3">-->
-                <!--                                        <label class="form-check-label">-->
-                <!--                                            <input type="radio" class="form-check-input" name="optradio"-->
-                <!--                                                   value="Nam">Nam-->
-                <!--                                        </label>-->
-                <!--                                    </div>-->
-                <!--                                    <div class="form-check-inline pt-3">-->
-                <!--                                        <label class="form-check-label">-->
-                <!--                                            <input type="radio" class="form-check-input" name="optradio"-->
-                <!--                                                   value="Nữ">Nữ-->
-                <!--                                        </label>-->
-                <!--                                    </div>-->
-                <!--                                    <div class="form-check-inline pt-3">-->
-                <!--                                        <label class="form-check-label">-->
-                <!--                                            <input type="radio" class="form-check-input" name="optradio"-->
-                <!--                                                   value="Khác">Khác-->
-                <!--                                        </label>-->
-                <!--                                    </div>-->
-                <!--                                </div>-->
-
-                <!--                                <div class="form-group pt-3">-->
-                <!--                                    <input type="text" placeholder="Số điện thoại..."-->
-                <!--                                           name="sdt" class="form-control" required/>-->
-                <!--                                </div>-->
-
-                <!--                                <div class="form-group pt-3">-->
-                <!--                                    <label for="birthday">Ngày sinh:</label>-->
-                <!--                                    <input type="date"-->
-                <!--                                           name="birthday" class="form-control" required id="birthday"/>-->
-                <!--                                </div>-->
-                <!--                                <div class="form-group pt-3">-->
-                <!--                                    <label for="address">Địa chỉ:</label>-->
-                <!--                                    <input type="text" placeholder="Địa chỉ..."-->
-                <!--                                           name="address" class="form-control" required id="address"/>-->
-                <!--                                </div>-->
-
-                <!--                                <div class="form-group pt-3">-->
-                <!--                                    <label for="calendar">Ngày khám:</label>-->
-                <!--                                    <input type="date"-->
-                <!--                                           name="calendar" class="form-control" required id="calendar"/>-->
-                <!--                                </div>-->
-                <!--                                <div class="modal-footer">-->
-                <!--                                    <button type="submit" value="submit" class="btn btn-primary">Submit</button>-->
-                <!--                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close-->
-                <!--                                    </button>-->
-                <!--                                </div>-->
-
-                <!--                            </form>-->
-
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
             </li>
 
         </ul>
@@ -132,17 +52,16 @@
                 <span class="d-none d-sm-inline mx-1">loser</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                <li><a class="dropdown-item" href="#">New project...</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
+
+
                 <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
+<!--                <li>-->
+<!--                    <hr class="dropdown-divider">-->
+<!--                </li>-->
                 <li><a class="dropdown-item" href="#">Sign out</a></li>
             </ul>
         </div>
     </div>
 </div>
 {% endblock %}
-
 

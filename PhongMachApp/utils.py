@@ -1,7 +1,9 @@
 # Tuơng tác với csdl
 from datetime import datetime
-from PhongMachApp import app, db
-from PhongMachApp.models import User, DatLichKham, Medicine, MedicineUnit
+
+from PhongMachApp import app, db, sms
+from PhongMachApp.models import User, Appointment, Medicine, MedicineUnit, MedicalExamList, Appointment
+import vonage
 # Băm mật khẩu
 import hashlib
 
@@ -19,7 +21,7 @@ def add_user(name, email, password, phone, **kwargs):
 def add_lich_kham(name, cccd, gender, sdt, birthday, address, calendar):
     # birthday = datetime.strptime(birthday, '%d-%m-%Y').date()
     # calendar = datetime.strptime(calendar, '%d-%m-%Y').date()
-    datLichKham = DatLichKham(
+    datLichKham = Appointment(
         name=name.strip(),
         cccd=cccd.strip(),
         gender=gender.strip(),
@@ -48,21 +50,85 @@ def load_medicine(kw=None, page=1):
         medicines_query = medicines_query.filter(Medicine.name.contains(kw))
 
     page_size = app.config['PAGE_SIZE']
-    start = (page-1)*page_size
+    start = (page - 1) * page_size
     end = start + page_size
     medicines = medicines_query.slice(start, end).all()
 
     return medicines
 
+
 def count_medicine():
     return Medicine.query.count()
 
 
-def get_email(user_email,):
+def get_email(user_email, ):
     return User.query.filter_by(email=user_email).first()
+
 
 def get_user_by_id(user_id):
     return User.query.get(user_id)
 
+
 def get_medicine_by_id(medicine_id):
     return Medicine.query.get(medicine_id)
+
+
+def count_cart(cart):
+    total_quantity = 0
+    total_amount = 0
+
+    if cart:
+        for c in cart.values():
+            total_quantity += c.get('quantity', 0)
+
+    return {
+        'total_quantity': total_quantity
+    }
+
+
+# y tas
+def get_patient_phone_number(patient_id):
+    patient = Appointment.query.get(patient_id)
+    if patient:
+        return patient.sdt
+    return None
+
+
+def send_appointment_date_to_patient(patient_phone_number, appointment_date):
+    message = (f"Phong kham HNK thong bao ngay kham benh cua ban la {appointment_date}.")
+
+    # Gửi tin nhắn đến số điện thoại bệnh nhân
+    response = sms.send_message({
+        'from': 'Vonage APIs',
+        'to': patient_phone_number,
+        'text': message,
+        'type': 'unicode'
+    })
+
+    if response['messages'][0]['status'] == '0':
+        print(f"Message sent successfully to {patient_phone_number}.")
+    else:
+        print(f"Message to {patient_phone_number} failed with error: {response['messages'][0]['error-text']}")
+
+
+def format_date(input_date):
+    # Chuyển đổi ngày từ chuỗi "YYYY-MM-DD" sang đối tượng datetime
+    formatted_date = datetime.strptime(input_date, "%Y-%m-%d")
+
+    # Định dạng lại ngày thành "Ngày tháng Năm"
+    result_date = formatted_date.strftime("%d-%m-%Y")
+
+    return result_date
+
+def get_patient_name(patient_id):
+    patient = Appointment.query.filter_by(id=patient_id).first()
+    return patient.name if patient else None
+
+# bác sĩ
+# def get_medical_exam_list():
+#     return MedicalExamList.query.all()
+# def get_patient_list():
+#     patient_list = Appointment.query.with_entities(Appointment.id).distinct().all()
+#     return patient_list
+
+

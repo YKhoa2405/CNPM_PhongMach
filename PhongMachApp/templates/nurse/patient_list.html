@@ -9,20 +9,26 @@
 </head>
 <body>
 <div class="container-fluid">
-    <!--header side bar-->
     <div class="row sidebar flex-nowrap">
         {% include 'nurse/header.html' %}
 
 
         <!--body-->
-        <div class=" content-side col py-3">
+        <div class=" imagesub content-side col py-3">
             <div class="container">
-                <div class="alert alert-success mt-5" id="alert">
-                    <strong>Success!</strong> Thêm thông tin khám của bệnh nhân thành công
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
                 </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
                 <h1 class="text-center text-info mt-3">Danh sách bệnh nhân</h1>
                 <!--                 style="display:none;"-->
-                <input type="date" id="ngayKham">
+                <label class="text-dark">Ngày khámㅤ</label>
+                <input type="date" id="ngayKham" name="ngayKham">
                 <button type="submit" value="submit" class="btn btn-outline-info" onclick="filterByDate()">Lọc</button>
                 <div class="table-patient">
                     <table class="mt-3 table table-striped table-info " id="patientTable">
@@ -40,18 +46,18 @@
                         </tr>
                         </thead>
                         <tbody class="tbody-scroll">
-                        {% for patient in patients %}
+                        {% for appointment in appointments %}
                         <tr>
-                            <td>{{patient.id}}</td>
-                            <td>{{ patient.name }}</td>
-                            <td>{{ patient.cccd }}</td>
-                            <td>{{ patient.gender }}</td>
-                            <td>{{ patient.sdt }}</td>
-                            <td>{{ patient.birthday }}</td>
-                            <td>{{ patient.address }}</td>
-                            <td>{{ patient.calendar }}</td>
+                            <td>{{ appointment.id}}</td>
+                            <td>{{ appointment.name }}</td>
+                            <td>{{  appointment.cccd }}</td>
+                            <td>{{  appointment.gender }}</td>
+                            <td>{{  appointment.sdt }}</td>
+                            <td>{{  appointment.birthday }}</td>
+                            <td>{{  appointment.address }}</td>
+                            <td>{{  appointment.calendar }}</td>
                             <td>
-                                <button type="button" class="btn-delete" onclick="deletePatient({{ patient.id }})">
+                                <button type="button" class="btn-delete" onclick="deletePatient({{ appointment.id }})">
                                     <img class="img-delete" src="static/image/delete.png"></button>
                             </td>
                         </tr>
@@ -71,15 +77,11 @@
     </div>
 </div><!-- end container-->
 
-<script src="static/js/nurse/nurse.js"></script>
+<script src="static/js/nurse.js"></script>
 <!-- Phần mã HTML của bạn -->
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-<!--<script src="static/js/nurse/nurse.js"></script>-->
-<!--<script>-->
-<!--    window.onload = showAndHideAlert;-->
-<!--</script>-->
 </body>
 </html>

@@ -1,16 +1,16 @@
-<div class="col-md-3 header_staff">
-    <nav class="navbar navbar-expand-lg nav_vertical" style="">
+<div class="header_staff">
+    <nav class="navbar navbar-expand-lg nav_vertical" >
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">{{ current_user.name }}</a>
+                    <img src="https://github.com/mdo.png" class="avatar_staff rounded-circle"><a class="nav-link" href="#">{{ current_user.name }}</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('lapPhieuKham') }}">Lập lịch khám</a>
+                    <a class="nav-link" href="{{ url_for('patient_list') }}">Danh sách bệnh nhân</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('lapPhieuKham') }}">Danh mục thuốc</a>
+                    <a class="nav-link" href="#">Lịch sử bệnh nhân</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('logout') }}" style="color:red;">Đăng xuất</a>

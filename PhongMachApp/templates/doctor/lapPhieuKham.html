@@ -3,7 +3,7 @@
 {% block title %}Lập phiếu khám{% endblock %}
 
 {% block content %}
-<div class="col-md-9 content_staff">
+<div class="content_staff">
     <div class="container-fluid medicine">
         <h2 class="title">Tra cứu thông tin thuốc</h2>
         <p>Chính thống - minh bạch - hiệu quả</p>
@@ -33,7 +33,7 @@
                         <div class="card-detail">
                             <a style="width:100%; margin-top:10px;" href="#"
                                class="btn btn-info"
-                               onclick="addToCart({{ m.id }} , '{{ m.name }}', {{ m.medicine_unit }})">Thêm thuốc
+                               onclick="addToCart({{ m.id }} , '{{ m.name }}', '{{ m.medicineUnit_id }}' )">Thêm thuốc
                             </a></div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                        name="forecast" class="form-control"/>
             </div>
             <!--            kiểm tra khác null-->
-            <!--            {% if 'cart' in session and session['cart'] %}-->
+            {% if 'cart' in session and session['cart'] %}
             <div>
                 <div class="row" style="text-align:center; font-weight:bold; font-size:14px;">
                     <div class="col-3">
@@ -89,37 +89,35 @@
                     <div class="col-1">
                     </div>
                 </div>
-
                 {% for c in session['cart'].values() %}
                 <div class="row">
                     <div class="col-3">
-                        <input type="text" class="form-control" name="name_medi" value="{{ c.name }}">
+                        <input type="text" class="form-control" name="name_medi" value="{{ c.name }} readonly ">
                     </div>
                     <div class="col-1">
-                        <input type="text" class="form-control" name="unit_medi" value="{{ c.medicine_unit }}">
+                        <input type="text" class="form-control" name="unit_medi" value="{{ c.medicineUnit_id }}">
                     </div>
                     <div class="col-1">
-                        <input type="number" class="form-control" name="count_medi">
+                        <input type="text" class="form-control" name="count_medi" value="{{ c.quantity }} ">
                     </div>
                     <div class="col-6">
                         <input type="text" class="form-control" name="description_medi">
                     </div>
                     <div class="col-1">
-                        <i class="fa fa-trash" style="color: #ff0000;"></i>
+                        <button type="button" class="btn btn-outline-danger" onclick="deleteCart({{ c.id }})"><i class="fa fa-trash" style="color: #ff0000;"></i></button>
+
                     </div>
                 </div>
                 {% endfor %}
             </div>
-            <!--            {% else %}-->
-            <!--            <p>Không có đơn thuốc nào</p>-->
-            <!--            {% endif %}-->
+            {% else %}
+            <p>Không có đơn thuốc nào</p>
+            {% endif %}
         </form>
 
-        <div class="btn_addmedi">
+        <div class="btn_addmedi" style>
             <button type="button" class="btn btn-success">Tạo phiếu</button>
-            <button type="button" class="btn btn-primary" id="addMedicineBtn">Thêm thuốc</button>
         </div>
     </div>
 </div>
-
 {% endblock %}

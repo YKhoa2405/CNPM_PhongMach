@@ -7,8 +7,3 @@
         });
     </script>
 
-
-function addtocart(){
-    event.preventDefault()
-    alert('fsdfs')
-}
