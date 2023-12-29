@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from sqlalchemy import Column, String, Integer, Enum, Float, ForeignKey, Date, DateTime, Table, Boolean
 from sqlalchemy.orm import relationship
@@ -6,24 +5,28 @@ from PhongMachApp import db, app
 from flask_login import UserMixin
 from enum import Enum as UserEnum
 
+
 class Basemodel(db.Model):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True, autoincrement=True)
 
+
 class UserRole(UserEnum):
     STAFF = 1
     USER = 2
+    NURSE = 3
+
 
 class User(Basemodel, UserMixin):
-    name = Column(String(50),nullable=False)
-    email = Column(String(50),nullable=False, unique=True)
+    name = Column(String(50), nullable=False)
+    email = Column(String(50), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
     phone = Column(String(50), nullable=False, unique=True)
     user_role = Column(Enum(UserRole), default=UserRole.USER)
 
 
-promissory_medicine = db.Table(#bangr trung gian thuốc và phiếu khám
+promissory_medicine = db.Table(  # bangr trung gian thuốc và phiếu khám
     'promissory_medicine',
     db.Column('promissory_id', Integer, ForeignKey('promissory_note.id'), primary_key=True),
     db.Column('medicine_id', db.Integer, db.ForeignKey('medicine.id'), primary_key=True),
@@ -31,12 +34,12 @@ promissory_medicine = db.Table(#bangr trung gian thuốc và phiếu khám
     db.Column('use_number', db.Integer)
 )
 
-class Promissory_note(Basemodel):#Phiếu khám
+
+class Promissory_note(Basemodel):  # Phiếu khám
     ngay_kham = Column(Date, nullable=False)
     trieu_chung = Column(String(100), nullable=False)
     chan_doan = Column(String(100), nullable=False)
     medicines = relationship('Medicine', secondary=promissory_medicine, backref='promissory_note', lazy=True)
-
 
 
 class MedicineUnit(Basemodel):
@@ -75,7 +78,8 @@ class Appointment(Basemodel):
     birthday = db.Column(db.Date, nullable=False)
     address = db.Column(db.String(255), nullable=False)
     calendar = db.Column(db.Date, nullable=False)
-    medical_exam_lists = db.relationship('MedicalExamList', back_populates='appointment')  # Quan hệ với bảng MedicalExamList
+    medical_exam_lists = db.relationship('MedicalExamList',
+                                         back_populates='appointment')  # Quan hệ với bảng MedicalExamList
 
 
 class MedicalExamList(db.Model):  # Appointment list
@@ -89,6 +93,10 @@ class MedicalExamList(db.Model):  # Appointment list
     appointment_id = db.Column(db.Integer, db.ForeignKey('appointment.id'))  # Khóa ngoại mã cuộc hẹn
     appointment = db.relationship('Appointment', back_populates='medical_exam_lists')  # Quan hệ với bảng Appointment
 
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+
+
+        # Tạo các đối tượng Medicine

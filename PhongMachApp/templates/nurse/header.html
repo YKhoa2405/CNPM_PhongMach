@@ -33,17 +33,18 @@
                     Lập danh sách khám</a>
 
             </li>
-            <li>
-                <a href="#" class="nav-link px-0 align-middle">
-                    Customers </a>
-            </li>
-            <li><!-- Button to Open the Modal -->
+
+<!--            <li>&lt;!&ndash; Button to Open the Modal &ndash;&gt;-->
 <!--                <button class="btn  btn-dkkham" data-bs-toggle="modal" data-bs-target="#myModal">-->
 <!--                    Đăng kí lịch khám-->
 <!--                </button>-->
-                <br>
+<!--                <br>-->
                 {% include 'nurse/modal_dkk.html' %}
 
+<!--            </li>-->
+            <li>
+                <a href="{{ url_for('logout') }}" class="nav-link px-0 align-middle">
+                    Đăng xuất </a>
             </li>
 
         </ul>

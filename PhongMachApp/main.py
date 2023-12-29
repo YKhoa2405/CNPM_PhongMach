@@ -230,12 +230,14 @@ def get_patients_by_date():
     selected_date = request.args.get('ngayKham')
     appointments = Appointment.query.filter_by(calendar=selected_date).all()
     appointment_count = len(appointments)
+    if appointment_count == 0:
+        flash('Không có bệnh nhân đăng ký lịch khám vào ngày này !!!', 'danger')
+        return redirect(url_for('show_result'))
     # Lưu danh sách bệnh nhân vào session
     session['selected_patients'] = [appointment.id for appointment in appointments]
 
     return render_template('nurse/patient_list_by_date.html', appointments=appointments,
-                           appointment_count=appointment_count)
-
+                           appointment_count=appointment_count, selected_date=selected_date)
 
 # lập ds khám
 @app.route('/appointment_list', methods=['POST'])
@@ -284,7 +286,10 @@ def create_appointment_list(user_id=1):
                                appointment_date=utils.format_date(appointment_date),appointment_code=list_code)
 
     return 'Lập danh sách không thành công'
-
+# trang thu ngân
+@app.route("/cashier")
+def cashier_home():
+    return render_template('cashier/cashier_home.html')
 if __name__ == '__main__':
     from PhongMachApp.admin import *
 

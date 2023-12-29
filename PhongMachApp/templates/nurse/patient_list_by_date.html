@@ -20,7 +20,7 @@
                 <h1 class="text-center text-info mt-5">Danh sách bệnh nhân</h1>
                 <p class="alert alert-success text-center">Số lượng bệnh nhân đăng ký theo ngày: {{ appointment_count
                     }}</p>
-                  {% with messages = get_flashed_messages(with_categories=true) %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                 {% for category, message in messages %}
                 <div class="alert alert-{{ category }}">
@@ -30,8 +30,9 @@
                 {% endif %}
                 {% endwith %}
                 <!-- Lọc theo ngày -->
-                <label class="text-dark">Ngày khámㅤ</label>
-                <input type="date" id="ngayKham">
+                <label class="text-dark">Ngày khám</label>
+                <input type="date" id="ngayKham" value="{{ selected_date }}">
+
                 <button class="btn btn-outline-info" onclick="filterByDate()">Lọc</button>
 
                 <!-- Bảng danh sách bệnh nhân -->
@@ -85,31 +86,14 @@
                     <!-- Form để lập danh sách khám -->
                     <form id="appointmentForm" action="/appointment_list" method="post">
                         <input style="display:none" type="date" id="appointment_date" name="appointment_date">
-                        <button class="btn btn-success btn-lapds" id="createListButton" type="button" onclick="saveAppointmentList()">
+                        <button class="btn btn-success btn-lapds" id="createListButton" type="button"
+                                onclick="saveAppointmentList()">
                             Lập danh sách khám
                         </button>
 
+
                         <!-- Modal -->
-                        <div class="modal" id="appointmentModal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <!-- Modal Header -->
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">Thông báo</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <!-- Modal Body -->
-                                    <div class="modal-body">
-                                        <p>Lịch hẹn đã được lập danh sách rồi.</p>
-                                    </div>
-                                    <!-- Modal Footer -->
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
 
                     </form>
                 </div>
@@ -122,11 +106,19 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    function saveAppointmentList() {
-        var selectedDate = document.getElementById('ngayKham').value;
-        document.getElementById('appointment_date').value = selectedDate;
-        document.getElementById('appointmentForm').submit();
-    }
+
+    <!--    document.addEventListener('DOMContentLoaded', function () {-->
+    <!--        var selectedDate = "{{ selected_date }}"; // Lấy giá trị selected_date từ template-->
+
+    <!--        if (selectedDate) {-->
+    <!--            document.getElementById('ngayKham').value = selectedDate; // Đặt giá trị của input date-->
+    <!--        }-->
+    <!--    });-->
+        function saveAppointmentList() {
+            var selectedDate = document.getElementById('ngayKham').value;
+            document.getElementById('appointment_date').value = selectedDate;
+            document.getElementById('appointmentForm').submit();
+        }
 </script>
 
 </body>
