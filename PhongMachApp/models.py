@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, Enum, Float, ForeignKey, Date, DateTime, Table
+from sqlalchemy import Column, String, Integer, Enum, Float, ForeignKey, Date, DateTime, Table, Boolean
 from sqlalchemy.orm import relationship
 from PhongMachApp import db, app
 from flask_login import UserMixin
@@ -13,10 +13,16 @@ class Basemodel(db.Model):
 
 
 class UserRole(UserEnum):
+<<<<<<< HEAD
     DOCTOR = 4
     NURSE = 2
     AMIN = 3
     USER = 1
+=======
+    STAFF = 1
+    USER = 2
+    NURSE = 3
+>>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 
 
 class User(Basemodel, UserMixin):
@@ -27,7 +33,10 @@ class User(Basemodel, UserMixin):
     user_role = Column(Enum(UserRole), default=UserRole.USER)
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 promissory_medicine = db.Table(  # bangr trung gian thuốc và phiếu khám
     'promissory_medicine',
     db.Column('promissory_id', Integer, ForeignKey('promissory_note.id'), primary_key=True),
@@ -69,6 +78,10 @@ class Medicine(Basemodel):
         return self.name
 
 
+<<<<<<< HEAD
+=======
+# khi bệnh nhân đăng k khám
+>>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 class Appointment(Basemodel):
     __tablename__ = 'appointment'
     id = db.Column(db.Integer, primary_key=True)
@@ -98,3 +111,6 @@ class MedicalExamList(db.Model):  # Appointment list
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+
+
+        # Tạo các đối tượng Medicine

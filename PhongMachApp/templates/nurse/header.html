@@ -7,6 +7,11 @@
         </div>
         <ul class="sidebar-item nav nav-pills flex-column pt-2 mb-sm-auto align-items-center align-items-sm-start"
             id="menu">
+            <li class="nav-item">
+                <a href="/nurse" class="nav-link align-middle px-0">
+                    Home
+                </a>
+            </li>
             <li>
                 <a href="/show_result" class="nav-link px-0 align-middle">
                     Danh sách bệnh nhân</a>
@@ -28,6 +33,7 @@
                     Lập danh sách khám</a>
 
             </li>
+<<<<<<< HEAD
             <li>
                 <a href="{{ url_for('logout') }}" class="nav-link px-0 align-middle">
                     Đăng xuất </a>
@@ -39,6 +45,20 @@
                 <br>
                 {% include 'nurse/modal_dkk.html' %}
 
+=======
+
+<!--            <li>&lt;!&ndash; Button to Open the Modal &ndash;&gt;-->
+<!--                <button class="btn  btn-dkkham" data-bs-toggle="modal" data-bs-target="#myModal">-->
+<!--                    Đăng kí lịch khám-->
+<!--                </button>-->
+<!--                <br>-->
+                {% include 'nurse/modal_dkk.html' %}
+
+<!--            </li>-->
+            <li>
+                <a href="{{ url_for('logout') }}" class="nav-link px-0 align-middle">
+                    Đăng xuất </a>
+>>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
             </li>
 
         </ul>

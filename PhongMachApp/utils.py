@@ -2,11 +2,15 @@
 from datetime import datetime
 
 from PhongMachApp import app, db, sms
+<<<<<<< HEAD
 from PhongMachApp.models import User, Appointment, Medicine, MedicineUnit, MedicalExamList, Appointment
 import vonage
+=======
+from PhongMachApp.models import User, Appointment, Medicine, MedicineUnit
+>>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 # Băm mật khẩu
 import hashlib
-
+import vonage
 
 def add_user(name, email, password, phone, **kwargs):
     # password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
@@ -73,6 +77,7 @@ def get_medicine_by_id(medicine_id):
     return Medicine.query.get(medicine_id)
 
 
+<<<<<<< HEAD
 def count_cart(cart):
     total_quantity = 0
     total_amount = 0
@@ -86,6 +91,8 @@ def count_cart(cart):
     }
 
 
+=======
+>>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 # y tas
 def get_patient_phone_number(patient_id):
     patient = Appointment.query.get(patient_id)
@@ -122,6 +129,7 @@ def format_date(input_date):
 
 def get_patient_name(patient_id):
     patient = Appointment.query.filter_by(id=patient_id).first()
+<<<<<<< HEAD
     return patient.name if patient else None
 
 # bác sĩ
@@ -132,3 +140,6 @@ def get_patient_name(patient_id):
 #     return patient_list
 
 
+=======
+    return patient.name if patient else None
+>>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
