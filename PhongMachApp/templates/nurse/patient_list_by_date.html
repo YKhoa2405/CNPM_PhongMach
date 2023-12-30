@@ -20,11 +20,7 @@
                 <h1 class="text-center text-info mt-5">Danh sách bệnh nhân</h1>
                 <p class="alert alert-success text-center">Số lượng bệnh nhân đăng ký theo ngày: {{ appointment_count
                     }}</p>
-<<<<<<< HEAD
                   {% with messages = get_flashed_messages(with_categories=true) %}
-=======
-                {% with messages = get_flashed_messages(with_categories=true) %}
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
                 {% if messages %}
                 {% for category, message in messages %}
                 <div class="alert alert-{{ category }}">
@@ -34,18 +30,10 @@
                 {% endif %}
                 {% endwith %}
                 <!-- Lọc theo ngày -->
-<<<<<<< HEAD
                 <label class="text-dark">Ngày khámㅤ</label>
                 <input type="date" id="ngayKham">
                 <button class="btn btn-outline-info" onclick="filterByDate()">Lọc</button>
 
-=======
-                <label class="text-dark">Ngày khám</label>
-                <input type="date" id="ngayKham" value="{{ selected_date }}">
-
-                <button class="btn btn-outline-info" onclick="filterByDate()">Lọc</button>
-
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
                 <!-- Bảng danh sách bệnh nhân -->
                 <div class="table-patient">
                     <table class="mt-3 table table-striped table-info" id="patientTable">
@@ -97,7 +85,6 @@
                     <!-- Form để lập danh sách khám -->
                     <form id="appointmentForm" action="/appointment_list" method="post">
                         <input style="display:none" type="date" id="appointment_date" name="appointment_date">
-<<<<<<< HEAD
                         <button class="btn btn-success btn-lapds" id="createListButton" type="button" onclick="saveAppointmentList()">
                             Lập danh sách khám
                         </button>
@@ -123,16 +110,6 @@
                                 </div>
                             </div>
                         </div>
-=======
-                        <button class="btn btn-success btn-lapds" id="createListButton" type="button"
-                                onclick="saveAppointmentList()">
-                            Lập danh sách khám
-                        </button>
-
-
-                        <!-- Modal -->
-
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 
                     </form>
                 </div>
@@ -145,27 +122,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-<<<<<<< HEAD
     function saveAppointmentList() {
         var selectedDate = document.getElementById('ngayKham').value;
         document.getElementById('appointment_date').value = selectedDate;
         document.getElementById('appointmentForm').submit();
     }
-=======
-
-    <!--    document.addEventListener('DOMContentLoaded', function () {-->
-    <!--        var selectedDate = "{{ selected_date }}"; // Lấy giá trị selected_date từ template-->
-
-    <!--        if (selectedDate) {-->
-    <!--            document.getElementById('ngayKham').value = selectedDate; // Đặt giá trị của input date-->
-    <!--        }-->
-    <!--    });-->
-        function saveAppointmentList() {
-            var selectedDate = document.getElementById('ngayKham').value;
-            document.getElementById('appointment_date').value = selectedDate;
-            document.getElementById('appointmentForm').submit();
-        }
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 </script>
 
 </body>

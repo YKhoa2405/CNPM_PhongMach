@@ -1,0 +1,39 @@
+body{
+    background-color: #ECECEC;
+}
+
+/*change quantity patient*/
+.change-quantity,
+.change-money{
+    display: flex;
+    margin-top: 40px;
+}
+.change-quantity div{
+    margin-left: 80px;
+}
+.change-money div{
+    margin-left: 172px
+}
+.save{
+    margin-left: 347px;
+    margin-top: 34px;
+}
+.save button{
+    width: 186px;
+    background-color: lightblue;
+    border: none;
+}
+/*report_statistics*/
+
+.content-wrap {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-evenly;
+}
+.content-wrap button{
+    border-radius: 50%;
+    padding: 13px;
+    background-color:#008CBA;
+    border: none;
+    color: white;
+}

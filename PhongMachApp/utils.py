@@ -1,16 +1,14 @@
 # Tuơng tác với csdl
 from datetime import datetime
 
+from flask import request
+
 from PhongMachApp import app, db, sms
-<<<<<<< HEAD
-from PhongMachApp.models import User, Appointment, Medicine, MedicineUnit, MedicalExamList, Appointment
+from PhongMachApp.models import User, Medicine, MedicineUnit, Appointment, MedicalExamList
 import vonage
-=======
-from PhongMachApp.models import User, Appointment, Medicine, MedicineUnit
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 # Băm mật khẩu
 import hashlib
-import vonage
+
 
 def add_user(name, email, password, phone, **kwargs):
     # password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
@@ -42,6 +40,14 @@ def check_login(email, password):
         # password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
         return User.query.filter(User.email.__eq__(email.strip()),
                                  User.password.__eq__(password)).first()
+
+def get_prev_url():
+    referer = request.headers.get('Referer')
+
+    if referer and referer != request.url:
+        return referer
+    else:
+        return '/'
 
 
 def load_medicineUnit():
@@ -77,7 +83,6 @@ def get_medicine_by_id(medicine_id):
     return Medicine.query.get(medicine_id)
 
 
-<<<<<<< HEAD
 def count_cart(cart):
     total_quantity = 0
     total_amount = 0
@@ -91,8 +96,6 @@ def count_cart(cart):
     }
 
 
-=======
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 # y tas
 def get_patient_phone_number(patient_id):
     patient = Appointment.query.get(patient_id)
@@ -118,6 +121,7 @@ def send_appointment_date_to_patient(patient_phone_number, appointment_date):
         print(f"Message to {patient_phone_number} failed with error: {response['messages'][0]['error-text']}")
 
 
+
 def format_date(input_date):
     # Chuyển đổi ngày từ chuỗi "YYYY-MM-DD" sang đối tượng datetime
     formatted_date = datetime.strptime(input_date, "%Y-%m-%d")
@@ -129,17 +133,14 @@ def format_date(input_date):
 
 def get_patient_name(patient_id):
     patient = Appointment.query.filter_by(id=patient_id).first()
-<<<<<<< HEAD
     return patient.name if patient else None
 
 # bác sĩ
-# def get_medical_exam_list():
-#     return MedicalExamList.query.all()
-# def get_patient_list():
-#     patient_list = Appointment.query.with_entities(Appointment.id).distinct().all()
-#     return patient_list
+def get_medical_exams_by_date(target_date):
+    medical_exams = MedicalExamList.query \
+        .join(Appointment, MedicalExamList.appointment_id == Appointment.id) \
+        .filter(Appointment.calendar == target_date) \
+        .all()
+    return medical_exams
 
 
-=======
-    return patient.name if patient else None
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf

@@ -5,7 +5,7 @@ from flask_login import login_user, logout_user
 from sqlalchemy import func
 
 from PhongMachApp.models import UserRole
-from datetime import datetime
+from datetime import datetime, date
 from PhongMachApp import app, utils, login, models, db
 from PhongMachApp.models import UserRole, MedicalExamList, Appointment
 from flask import make_response
@@ -76,7 +76,11 @@ def user_login():
             if user.user_role == UserRole.DOCTOR:
                 return render_template('doctor/patient_list.html')
             elif user.user_role == UserRole.NURSE:
+                # Add the corresponding action for nurses, for example:
                 return render_template('nurse/nurse_home.html')
+            elif user.user_role == UserRole.CASHIER:
+                # Add the corresponding action for nurses, for example:
+                return render_template('cashier/cashier_home.html')
             else:
                 return redirect(url_for('index'))
         else:
@@ -118,10 +122,7 @@ def datLichKham():
     return render_template('datLichKham.html', err_msg=err_msg, current_page='datLichKham')
 
 
-<<<<<<< HEAD
 # Lập phiếu khám cho từng bệnh nhân
-=======
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 @app.route('/lapPhieuKham')
 def lapPhieuKham():
     kwmedi = request.args.get('keywordmedi')
@@ -129,21 +130,19 @@ def lapPhieuKham():
     return render_template('doctor/lapPhieuKham.html', kw=kwmedi, medicines=medis)
 
 
-<<<<<<< HEAD
 # Danh sách bệnh nhân khám theo ngày đươcj y tá lọc
 # Bác sĩ
-@app.route('/doctor')
-def patient_list():
-    return render_template('doctor/patient_list.html')
+@app.route('/doctor/patient_list')
+def doctor_patient_list():
+    today = date.today()  # Lấy ngày hiện tại
+    medical_exams = utils.get_medical_exams_by_date(today)  # Lấy danh sách cuộc hẹn cho ngày hiện tại
+    return render_template('doctor/patient_list.html', medical_exams=medical_exams, target_date=today)
 
 
 
 
 # Thêm thuốc
 @app.route('/api/add_medicine', methods=['put'])
-=======
-@app.route('/api/add_medicine', methods=['POST'])
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 def add_medicine():
     data = request.json
     id = str(data.get('id'))
@@ -166,19 +165,10 @@ def add_medicine():
     return jsonify(utils.count_cart(cart))
 
 
-<<<<<<< HEAD
 # Xóa thuốc
 @app.route('/api/delete_cart/<medicine_id>', methods=['delete'])
 def delete_cart(medicine_id):
     cart = session.get('cart')
-=======
-######################## Y TA --------------------------------------
-
-# trang y tá
-@app.route("/nurse")
-def nurse_home():
-    return render_template('nurse/nurse_home.html')
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 
     if cart and medicine_id in cart:
         del cart[medicine_id]
@@ -317,137 +307,25 @@ def create_appointment_list(user_id=1):
     return 'Lập danh sách không thành công'
 
 
-# bác sĩ
-
-@app.route('/result', methods=['POST', 'GET'])
-def add_patient():
-    if request.method == 'POST':
-        name = request.form['name']
-        cccd = request.form['cccd']
-        gender = request.form['optradio']
-        sdt = request.form['sdt']
-        birthday = request.form['birthday']
-        address = request.form['address']
-        calendar = request.form['calendar']
-
-        new_appointment = Appointment(
-            name=name,
-            cccd=cccd,
-            gender=gender,
-            sdt=sdt,
-            birthday=birthday,
-            address=address,
-            calendar=calendar
-        )
-
-        # Thêm bệnh nhân mới vào cơ sở dữ liệu
-        db.session.add(new_appointment)
-        db.session.commit()
-
-        # Lấy danh sách bệnh nhân từ cơ sở dữ liệu
-        appointments = Appointment.query.all()
-
-        # Cập nhật lại ID cho từng bệnh nhân
-        new_id = 1
-        for appoinment in appointments:
-            appoinment.id = new_id
-            new_id += 1
-
-    db.session.commit()
-    flash('THÊM THÔNG TIN KHÁM BỆNH NHÂN THÀNH CÔNG', 'success')
-    return redirect(url_for('show_result'))
-
-
-# Route hiển thị danh sách bệnh nhân
-@app.route('/show_result')
-def show_result():
-    appointments = Appointment.query.all()
-    return render_template('nurse/patient_list.html', appointments=appointments)
-
-
-# xóa bệnh nhân
-@app.route('/patients/<int:appointment_id>/delete', methods=['POST'])
-def delete_patient(appointment_id):
-    appointment = Appointment.query.get_or_404(appointment_id)
-    db.session.delete(appointment)
-    db.session.commit()
-    appointments = Appointment.query.all()
-    new_id = 1
-
-    for appoinment in appointments:
-        appoinment.id = new_id
-        new_id += 1
-
-    db.session.commit()
-    return flash('Xóa bệnh nhân thành công', 'success')
-
-
-# lọc bệnh nhân theo ngày khám
-@app.route('/get_patients_by_date', methods=['GET'])
-def get_patients_by_date():
-    selected_date = request.args.get('ngayKham')
-    appointments = Appointment.query.filter_by(calendar=selected_date).all()
-    appointment_count = len(appointments)
-    if appointment_count == 0:
-        flash('Không có bệnh nhân đăng ký lịch khám vào ngày này !!!', 'danger')
-        return redirect(url_for('show_result'))
-    # Lưu danh sách bệnh nhân vào session
-    session['selected_patients'] = [appointment.id for appointment in appointments]
-
-    return render_template('nurse/patient_list_by_date.html', appointments=appointments,
-                           appointment_count=appointment_count, selected_date=selected_date)
-
-# lập ds khám
-@app.route('/appointment_list', methods=['POST'])
-def create_appointment_list(user_id=1):
-    # Lấy danh sách bệnh nhân đã được chọn từ session
-    selected_patients = session.get('selected_patients', [])
-    # Lấy ID ca khám cuối cùng trong bảng MedicalExamList
-    latest_appointment = db.session.query(func.max(MedicalExamList.id)).scalar() or 0
-    new_appointment_id = latest_appointment + 1
-    # Lấy ngày khám từ form
-    appointment_date = request.form.get('appointment_date')
-    if appointment_date:
-        list_code = str(new_appointment_id)
-        for patient_id in selected_patients:
-            # Kiểm tra xem bệnh nhân đã có lịch hẹn trong danh sách khám hay chưa
-            existing_appointment = MedicalExamList.query.filter_by(appointment_id=patient_id).first()
-
-            if existing_appointment:
-                flash(
-                    f'Lịch hẹn của bệnh nhân {utils.get_patient_name(patient_id)} đã được lập danh sách.Vui lòng lập danh sách những bệnh nhân khác!!',
-                    'danger')
-                return redirect(url_for('get_patients_by_date', ngayKham=appointment_date))
-            else:
-                # Nếu chưa có, thực hiện lưu thông tin
-                person = MedicalExamList(
-                    list_code=list_code,
-                    created_date=datetime.now().date(),
-                    appointment_date=appointment_date,
-                    user_id=user_id,
-                    appointment_id=patient_id
-                )
-                db.session.add(person)
-
-                # Cập nhật trạng thái has_appointment_list của bệnh nhân
-
-                # Gửi tin nhắn thông báo đến bệnh nhân (uncomment nếu cần)
-                # patient_phone_number = utils.get_patient_phone_number(patient_id)
-                # utils.send_appointment_date_to_patient(patient_phone_number, appointment_date)
-
-        db.session.commit()
-        session.pop('selected_patients', None)
-
-        # Hiển thị danh sách đã lập
-        new_appointments = MedicalExamList.query.filter_by(appointment_date=appointment_date).all()
-        return render_template('nurse/appointment_list.html', appointments=new_appointments,
-                               appointment_date=utils.format_date(appointment_date),appointment_code=list_code)
-
-    return 'Lập danh sách không thành công'
-# trang thu ngân
+# thu ngân
 @app.route("/cashier")
 def cashier_home():
     return render_template('cashier/cashier_home.html')
+@app.route("/cashier/pay_bill")
+def pay_bill():
+    return render_template('cashier/pay_bill.html')
+
+# admin
+@app.route('/admin/signin_admin', methods=['post'])
+def signin_admin():
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    user = utils.check_login(email=email, password=password)
+    if user:
+        login_user(user=user)
+    return redirect(utils.get_prev_url())
+
 if __name__ == '__main__':
     from PhongMachApp.admin import *
 

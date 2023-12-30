@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, Enum, Float, ForeignKey, Date, DateTime, Table, Boolean
+from sqlalchemy import Column, String, Integer, Enum, Float, ForeignKey, Date, DateTime, Table
 from sqlalchemy.orm import relationship
 from PhongMachApp import db, app
 from flask_login import UserMixin
@@ -13,16 +13,11 @@ class Basemodel(db.Model):
 
 
 class UserRole(UserEnum):
-<<<<<<< HEAD
+    CASHIER = 5
     DOCTOR = 4
     NURSE = 2
-    AMIN = 3
+    ADMIN = 3
     USER = 1
-=======
-    STAFF = 1
-    USER = 2
-    NURSE = 3
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 
 
 class User(Basemodel, UserMixin):
@@ -33,10 +28,16 @@ class User(Basemodel, UserMixin):
     user_role = Column(Enum(UserRole), default=UserRole.USER)
 
 
-<<<<<<< HEAD
+class DatLichKham(Basemodel):
+    name = Column(String(50), nullable=False)
+    cccd = Column(String(50), nullable=False, unique=True)
+    gender = Column(String(10), nullable=False)
+    sdt = Column(String(20), nullable=False, unique=True)
+    birthday = Column(Date, nullable=False)
+    address = Column(String(255), nullable=False)
+    calendar = Column(Date, nullable=False)
 
-=======
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
+
 promissory_medicine = db.Table(  # bangr trung gian thuốc và phiếu khám
     'promissory_medicine',
     db.Column('promissory_id', Integer, ForeignKey('promissory_note.id'), primary_key=True),
@@ -78,10 +79,6 @@ class Medicine(Basemodel):
         return self.name
 
 
-<<<<<<< HEAD
-=======
-# khi bệnh nhân đăng k khám
->>>>>>> 6d8e1b08f15ec0ad498e6cec39b04517e42864cf
 class Appointment(Basemodel):
     __tablename__ = 'appointment'
     id = db.Column(db.Integer, primary_key=True)
@@ -95,7 +92,7 @@ class Appointment(Basemodel):
     medical_exam_lists = db.relationship('MedicalExamList',
                                          back_populates='appointment')  # Quan hệ với bảng MedicalExamList
 
-
+# Danh sách khám gửi cho bác sĩ
 class MedicalExamList(db.Model):  # Appointment list
     __tablename__ = 'medical_exam_list'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -105,12 +102,19 @@ class MedicalExamList(db.Model):  # Appointment list
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Khóa ngoại tới bảng User
     user = db.relationship('User', backref='medical_exam_lists')  # Quan hệ với bảng User
     appointment_id = db.Column(db.Integer, db.ForeignKey('appointment.id'))  # Khóa ngoại mã cuộc hẹn
-    appointment = db.relationship('Appointment', back_populates='medical_exam_lists')  # Quan hệ với bảng Appointment
+    appointment = db.relationship('Appointment', back_populates='medical_exam_lists')
 
+# Hóa đơn
+
+
+# amin quy dinh
+class Regulation(Basemodel):
+    patient_quantity = Column(Integer, default=40)
+    examination_fee = Column(Float, default=100000)
+
+    def __str__(self):
+        return self.name
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-
-
-        # Tạo các đối tượng Medicine
