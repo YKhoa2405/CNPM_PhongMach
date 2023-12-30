@@ -1,10 +1,64 @@
 {% extends 'admin/base_admin.html' %}
 
 {% block content %}
-    <h1 class="text-center">THỐNG KÊ BÁO CÁO</h1>
-    <div class="content-wrap">
-        <button>Doanh thu theo tháng</button>
-        <button>Tần suất khám</button>
-        <button>Tần suất sử dụng thuốc</button>
+<h1 class="text-center">THỐNG KÊ BÁO CÁO</h1>
+<div class="content-wrap">
+    <button>Doanh thu theo tháng</button>
+    <button>Tần suất khám</button>
+    <button>Tần suất sử dụng thuốc</button>
+</div>
+<div class="container" style="margin-top:20px;">
+    <div class="row">
+        <div class="col-md-6 col-xs-12">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Mã thuốc</th>
+                    <th>Tên thuốc</th>
+                    <th>Số Lượng</th>
+                    <th>Định dạng</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6 col-xs-12">
+            <canvas id="medicineChart"></canvas>
+        </div>
     </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    window.onload = function() {
+        const ctx = document.getElementById('medicineChart');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    label: 'Tần xuất sử dụng thuốc',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+
 {% endblock %}

@@ -122,23 +122,25 @@ def datLichKham():
     return render_template('datLichKham.html', err_msg=err_msg, current_page='datLichKham')
 
 
-# Lập phiếu khám cho từng bệnh nhân
-@app.route('/lapPhieuKham')
-def lapPhieuKham():
-    kwmedi = request.args.get('keywordmedi')
-    medis = utils.load_medicine(kw=kwmedi)
-    return render_template('doctor/lapPhieuKham.html', kw=kwmedi, medicines=medis)
 
 
 # Danh sách bệnh nhân khám theo ngày đươcj y tá lọc
-# Bác sĩ
+# doctor
 @app.route('/doctor/patient_list')
 def doctor_patient_list():
     today = date.today()  # Lấy ngày hiện tại
     medical_exams = utils.get_medical_exams_by_date(today)  # Lấy danh sách cuộc hẹn cho ngày hiện tại
     return render_template('doctor/patient_list.html', medical_exams=medical_exams, target_date=today)
 
+# Lap phieu kham
+@app.route('/examination_form/<int:appointment_id>')
+def examination_form(appointment_id):
+    kwmedi = request.args.get('keywordmedi')
+    medis = utils.load_medicine(kw=kwmedi)
+    patient_info = utils.get_patient_info(appointment_id)
+    return render_template('doctor/lapPhieuKham.html', kw=kwmedi, medicines=medis, name=patient_info['name'], calendar=patient_info['appointment_date'])
 
+# Lập phiếu khám cho từng bệnh nhân
 
 
 # Thêm thuốc
@@ -311,9 +313,12 @@ def create_appointment_list(user_id=1):
 @app.route("/cashier")
 def cashier_home():
     return render_template('cashier/cashier_home.html')
+
+
 @app.route("/cashier/pay_bill")
 def pay_bill():
     return render_template('cashier/pay_bill.html')
+
 
 # admin
 @app.route('/admin/signin_admin', methods=['post'])
@@ -325,6 +330,7 @@ def signin_admin():
     if user:
         login_user(user=user)
     return redirect(utils.get_prev_url())
+
 
 if __name__ == '__main__':
     from PhongMachApp.admin import *

@@ -143,4 +143,14 @@ def get_medical_exams_by_date(target_date):
         .all()
     return medical_exams
 
+def get_patient_info(appointment_id):
+    appointment = Appointment.query.filter_by(id=appointment_id).first()
+    if appointment:
+        return {'name': appointment.name, 'appointment_date': appointment.calendar}
+    return {'name': None, 'appointment_date': None}
+
+
+# thống kê, báo cáo
+# def medicines_stats(ks=None, from_date =None, to_date =None):
+
 
