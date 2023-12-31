@@ -6,7 +6,7 @@ from sqlalchemy import func
 from PhongMachApp.models import UserRole
 from datetime import datetime, date
 from PhongMachApp import app, utils, login, models, db
-from PhongMachApp.models import UserRole, MedicalExamList, Appointment, Promissory_medicine, Promissory_note
+from PhongMachApp.models import UserRole, MedicalExamList, Appointment, Prescription, PromissoryNote
 from flask import make_response
 
 app.secret_key = 'Caichyrua11@'
@@ -129,7 +129,7 @@ def doctor_patient_list():
     # success= session.setdefault('success', False)
     medical_exams = utils.get_medical_exams_by_date(today)  # Lấy danh sách cuộc hẹn cho ngày hiện tại
     appointment_ids = [note.appointment_id for note in
-                       Promissory_note.query.all()]  # LẤY ID NHỮNG CUỘC HẸN RA ĐỂ CUSTOM BUTTON
+                       PromissoryNote.query.all()]  # LẤY ID NHỮNG CUỘC HẸN RA ĐỂ CUSTOM BUTTON
     return render_template('doctor/patient_list.html', medical_exams=medical_exams, target_date=today,
                            appointment_ids=appointment_ids)
 
@@ -140,7 +140,7 @@ def examination_form(appointment_id):
     kwmedi = request.args.get('keywordmedi')
     medis = utils.load_medicine(kw=kwmedi)
     patient_info = utils.get_patient_info(appointment_id)
-    return render_template('doctor/lapPhieuKham.html', kw=kwmedi, medicines=medis, name=patient_info['name'],
+    return render_template('doctor/PhieuKham.html', kw=kwmedi, medicines=medis, name=patient_info['name'],
                            calendar=patient_info['appointment_date'], appointment_id=appointment_id)
 
 
@@ -179,7 +179,7 @@ def delete_cart(medicine_id):
         session['cart'] = cart
     return jsonify(utils.count_cart(cart))
 
-
+#LẬP PHIẾU KHÁM
 @app.route('/create_prescription', methods=['POST'])
 def create_prescription():
     if request.method == 'POST':
@@ -191,9 +191,7 @@ def create_prescription():
             symptom = request.form.get('symptom')
             forecast = request.form.get('forecast')
 
-            # Tạo một phiếu mới
-            # Tạo một phiếu mới
-            new_prescription = Promissory_note(
+            new_prescription = PromissoryNote(
                 date=date,
                 symptom=symptom,
                 forecast=forecast,
@@ -201,11 +199,11 @@ def create_prescription():
                 user_id=user_id
             )
 
-            # Lưu phiếu thuốc vào cơ sở dữ liệu trước vòng lặp
             db.session.add(new_prescription)
             db.session.commit()
 
-            # Lưu thông tin về thuốc từ request form vào CSDL
+            medicine_list = []  # Tạo danh sách Prescription để thêm vào session
+
             medicine_ids = request.form.getlist('id_medi')
             medicine_quantities = request.form.getlist('count_medi')
             usages = request.form.getlist('usage')
@@ -213,21 +211,23 @@ def create_prescription():
             for i in range(len(medicine_ids)):
                 medicine = Medicine.query.get(medicine_ids[i])
                 if medicine:
-                    # Lưu thông tin chi tiết thuốc vào bảng trung gian `promissory_medicine`
-                    new_promissory_medicine = Promissory_medicine.insert().values(
+                    new_prescription = Prescription(
                         promissory_id=new_prescription.id,
                         medicine_id=medicine_ids[i],
-                        quantiny=medicine_quantities[i],
+                        quantity=medicine_quantities[i],
                         usage_detail=usages[i],
                         use_number=1
                     )
+                    medicine_list.append(new_prescription)
 
-                    db.session.execute(new_promissory_medicine)
-                    db.session.commit()
-            session['success'] = True  # Giả sử phiếu được tạo thành công
+            # Thêm tất cả các Prescription vào session cùng một lúc
+            db.session.add_all(medicine_list)
+            db.session.commit()  # Commit sau khi thêm tất cả các Prescription vào session
+
+            session['success'] = True
+            session.pop('cart', None)
         flash(f'LẬP PHIẾU KHÁM THÀNH CÔNG!!!!', 'success')
-        # Redirect hoặc trả về template với thông báo thành công
-        return redirect('/doctor/patient_list')  # Điều hướng đến trang thông báo thành công
+        return redirect('/doctor/patient_list')
 
 
 # trang y tá
@@ -366,10 +366,13 @@ def create_appointment_list():
         return 'Lập danh sách không thành công'
 
 
-# thu ngân
+#  thu ngân
 @app.route("/cashier")
 def cashier_home():
-    return render_template('cashier/cashier_home.html')
+    all_notes = PromissoryNote.query.all()#truy vấn phiếu khám
+    # prescriptions = Prescription.query.all()#truy phấn phiếu thuôcs
+    return render_template('cashier/cashier_home.html', all_notes=all_notes)
+
 
 
 @app.route("/cashier/pay_bill")
@@ -392,4 +395,4 @@ def signin_admin():
 if __name__ == '__main__':
     from PhongMachApp.admin import *
 
-    app.run(debug=True, port=5500)
+    app.run(debug=True, port=5000)

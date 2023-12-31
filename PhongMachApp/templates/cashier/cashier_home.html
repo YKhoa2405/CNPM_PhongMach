@@ -13,6 +13,7 @@
             integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="static/css/nurse_home.css">
+    <link rel="stylesheet" href="static/css/cashier.css">
 </head>
 <body>
 
@@ -22,8 +23,36 @@
         {% include 'cashier/header.html' %}
 
         <!--body-->
-        <div class=" imagenen col py-3">
-            <h1 class="text-header text-center"> CHÀO MỪNG BẠN ĐẾN VỚI TRANG THU NGÂN</h1>
+        <div class=" col py-3" style="margin-left:400px;">
+            <h1 class="text-header text-dark text-center"> CHÀO MỪNG BẠN ĐẾN VỚI TRANG THU NGÂN</h1>
+            <p class="text-dark text-center"> DANH SÁCH HÓA ĐƠN THANH TOÁN </p>
+
+            <table border="1" class="container table table-striped table-bordered">
+                <thead class="bg-info">
+                <tr>
+                    <th>Mã phiếu</th>
+                    <th>Mã bệnh nhân</th>
+                    <th>Ngày khám</th>
+                    <th>Triệu chứng</th>
+                    <th>Chẩn đoán</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for note in all_notes %}
+                <tr>
+                    <td>{{ note.id }}</td>
+                    <td>{{ note.appointment_id }}</td>
+                    <td>{{ note.date }}</td>
+                    <td>{{ note.symptom }}</td>
+                    <td>{{ note.forecast }}</td>
+                    <td>
+                        <button type="button" class="btn btn-success">Thanh toán</button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
         </div>
     </div>

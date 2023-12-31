@@ -28,25 +28,6 @@ class User(Basemodel, UserMixin):
     user_role = Column(Enum(UserRole), default=UserRole.USER)
 
 
-Promissory_medicine = db.Table(  # CHI TIẾT PHIẾU THUỐC # bangr trung gian thuốc và phiếu khám
-    'promissory_medicine',
-    db.Column('id', Integer, primary_key=True, autoincrement=True),
-    db.Column('promissory_id', Integer, ForeignKey('promissory_note.id'), primary_key=True),
-    db.Column('medicine_id', db.Integer, db.ForeignKey('medicine.id'), primary_key=True),
-    db.Column('quantiny', db.Integer),  # số lượng
-    db.Column('use_number', db.Integer),  # số lần dùng
-    db.Column('usage_detail', db.String(255)))
-
-
-class Promissory_note(Basemodel):  # Phiếu khám
-    date = Column(Date, nullable=False)  # ngày khám
-    symptom = Column(String(100), nullable=False)  # triệu chứng
-    forecast = Column(String(100), nullable=False)  # chẩn đoán
-    appointment_id = Column(Integer, ForeignKey('appointment.id'))  # ID của lịch hẹn
-    user_id = Column(Integer, ForeignKey('user.id'))  # ID của người lập phiếu
-    medicines = relationship('Medicine', secondary=Promissory_medicine, backref='promissory_note', lazy=True)
-
-
 class MedicineUnit(Basemodel):
     name = Column(String(30), unique=True, default='')
     medicines = relationship('Medicine', backref='medicine_unit', lazy=True)
@@ -66,10 +47,38 @@ class Medicine(Basemodel):
     price = Column(Integer, default=0.0)
     description = Column(String(1000), default='')
     # # foreign keys
-    medicineUnit_id = Column(Integer, ForeignKey(MedicineUnit.id), nullable=False)
+    medicineUnit_id = Column(Integer, ForeignKey(MedicineUnit.id), nullable=False)#khóa ngoại tới đơn vị thuốc
+    prescriptions = relationship("Prescription", backref="related_medicine")
 
     def __str__(self):
         return self.name
+class PromissoryNote(Basemodel):
+    __tablename__ = 'promissory_note'
+
+    date = Column(Date, nullable=False)
+    symptom = Column(String(100), nullable=False)#Triệu chứng
+    forecast = Column(String(100), nullable=False)# chẩn đoán
+    user_id = Column(Integer, ForeignKey('user.id'))# id nhân viên
+    user = relationship("User", backref="promissory_notes")
+
+    appointment_id = Column(Integer, ForeignKey('appointment.id'))# id lịch hẹn
+    appointment = relationship("Appointment", backref="promissory_notes")
+
+    prescriptions = relationship("Prescription", backref="promissory_note")# đơn thuốc
+class Prescription(db.Model):
+    __tablename__ = 'prescription'
+
+    id = db.Column(db.Integer, primary_key=True)
+    promissory_id = db.Column(db.Integer, db.ForeignKey('promissory_note.id'))
+    medicine_id = db.Column(db.Integer, db.ForeignKey('medicine.id'))
+    quantity = db.Column(db.Integer)
+    use_number = db.Column(db.Integer)
+    usage_detail = db.Column(db.String(255))
+
+    # Define relationships if needed
+    related_promissory_note = relationship("PromissoryNote", backref="related_prescriptions")
+    medicine = db.relationship('Medicine')
+
 
 
 class Appointment(Basemodel):  # LỊCH HẸN

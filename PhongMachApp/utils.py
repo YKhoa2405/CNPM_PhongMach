@@ -6,7 +6,7 @@ from flask import session
 from sqlalchemy import func
 
 from PhongMachApp import app, db, sms
-from PhongMachApp.models import User, Medicine, MedicineUnit, Appointment, MedicalExamList, Promissory_medicine
+from PhongMachApp.models import User, Medicine, MedicineUnit, Appointment, MedicalExamList, Prescription
 import vonage
 # Băm mật khẩu
 import hashlib
@@ -163,9 +163,9 @@ def get_unit_name_by_id(unit_id):
 
 
 # thống kê, báo cáo
-def medicines_stats(ks=None, from_date=None, to_date=None):
-    # m = db.session.query(Medicine.id, Medicine.name, func.sum(Promissory_medicine))\
-    #     .join(Promissory_medicine,Promissory_medicine.c.medicine_id.__eq__(Medicine.id))\
-    #     .group_by(Medicine.id, Medicine.name)
-
-    return m.all()
+# def medicines_stats(ks=None, from_date=None, to_date=None):
+#     # m = db.session.query(Medicine.id, Medicine.name, func.sum(Promissory_medicine))\
+#     #     .join(Promissory_medicine,Promissory_medicine.c.medicine_id.__eq__(Medicine.id))\
+#     #     .group_by(Medicine.id, Medicine.name)
+#
+#     return m.all()
