@@ -73,3 +73,23 @@ function getAppointmentDate() {
     return selectedDate;
 }
 
+function deleteAppointment(appointmentId) {
+    // Gửi yêu cầu xóa đến server
+    fetch(`/delete_appointment/${appointmentId}`, {
+        method: 'DELETE',
+    })
+    .then(response => {
+        if (response.ok) {
+            // Xóa thành công: cập nhật giao diện hoặc thông báo
+            console.log('Xóa thành công');
+            // Cập nhật giao diện sau khi xóa, ví dụ: reload trang
+            window.location.reload();
+        } else {
+            // Xử lý lỗi nếu cần
+            console.error('Xóa không thành công');
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi:', error);
+    });
+}

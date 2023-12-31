@@ -34,7 +34,9 @@
                             <a style="width:100%; margin-top:10px;" href="#"
                                class="btn btn-info"
                                onclick="addToCart({{ m.id }} , '{{ m.name }}', '{{ m.medicineUnit_id }}' )">Thêm thuốc
-                            </a></div>
+                            </a>
+
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -46,39 +48,55 @@
         {% endif%}
     </div>
 
-    <div class="container">
-        <h1 class="text-center text-success">Lập phiếu khám</h1>
+    <div class="container form-phieu ">
+        <h1 class="text-center text-light">PHIẾU KHÁM BỆNH</h1>
         {% if err_msg %}
         <div class="alert alert-danger">
             <h1>{{ err_msg }}</h1>
         </div>
         {% endif %}
-        <form method="post">
-            <div class="form-group d-flex">
-                <input type="text" class="form-control" name="name" value="{{ name }}">
-            </div>
-            <div class="form-group d-flex">
+        <form class="mt-4 form-phieu" action="/create_prescription" method="post">
+               <div class="form-group col-md-4 d-flex">
+                <label> Ngày khám </label>
                 <input type="date" name="date" class="form-control" value="{{ calendar }}"/>
             </div>
-            <div class="form-group d-flex">
-                <input type="text" placeholder="Triệu chứng"
-                       name="symptom" class="form-control"/>
+
+            <div class="row">
+                <div class="form-group col-md-6 d-flex">
+                    <label>ID bệnh nhân</label>
+                    <input type="text" class="form-control" name="appointment_id" value="{{ appointment_id }}">
+                </div>
+                <div class="form-group col-md-6 d-flex">
+                    <label> Họ tên bệnh nhân</label>
+                    <input type="text" class="form-control" name="name" value="{{ name }}">
+                </div>
+
             </div>
-            <div class="form-group d-flex">
-                <input type="text" placeholder="Dự đoán loại bệnh"
-                       name="forecast" class="form-control"/>
+
+            <div class="row">
+                <div class="form-group col-md-6  d-flex">
+                    <label>Triệu chứng</label>
+                    <input type="text" id="symptom-input" onkeyup="saveInput()" placeholder="Triệu chứng"
+                           name="symptom" class="form-control"/>
+                </div>
+                <div class="form-group col-md-6 d-flex">
+                    <label>Chẩn đoán bệnh </label>
+                    <input type="text" id="predict-input" onkeyup="saveInput()" placeholder="Dự đoán loại bệnh"
+                           name="forecast" class="form-control"/>
+                </div>
             </div>
+
             <!--            kiểm tra khác null-->
             {% if 'cart' in session and session['cart'] %}
             <div>
-                <div class="row" style="text-align:center; font-weight:bold; font-size:14px;">
+                <div class="row mt-3" style="text-align:center; font-weight:bold; font-size:18px;">
                     <div class="col-3">
                         <p>Tên thuốc</p>
                     </div>
                     <div class="col-1">
                         <p>Đơn vị</p>
                     </div>
-                    <div class="col-1">
+                    <div class="col-2">
                         <p>Số lượng</p>
                     </div>
                     <div class="col-6">
@@ -88,18 +106,21 @@
                     </div>
                 </div>
                 {% for c in session['cart'].values() %}
-                <div class="row">
+                <div style="display:none;">
+                    <input type="text" class="form-control" name="id_medi" value="{{ c.id }} ">
+                </div>
+                <div class="mt-2 row">
                     <div class="col-3">
-                        <input type="text" class="form-control" name="name_medi" value="{{ c.name }} readonly ">
+                        <input type="text" class="form-control" name="name_medi" value="{{ c.name }}  ">
                     </div>
                     <div class="col-1">
-                        <input type="text" class="form-control" name="unit_medi" value="{{ c.medicineUnit_id }}">
+                        <input type="text" class="form-control" name="unit_medi" value="{{ c.medicine_unit_name }}">
                     </div>
-                    <div class="col-1">
+                    <div class="col-2">
                         <input type="text" class="form-control" name="count_medi" value="{{ c.quantity }} ">
                     </div>
-                    <div class="col-6">
-                        <input type="text" class="form-control" name="description_medi">
+                    <div class="col-5">
+                        <input type="text" class="form-control" name="usage">
                     </div>
                     <div class="col-1">
                         <button type="button" class="btn btn-outline-danger" onclick="deleteCart({{ c.id }})"><i
@@ -112,11 +133,13 @@
             {% else %}
             <p>Không có đơn thuốc nào</p>
             {% endif %}
+
+            <button type="submit" class="btn btn_addmedi mt-5 float-end">Tạo phiếu</button>
         </form>
 
-        <div class="btn_addmedi" style>
-            <button type="button" class="btn btn-success">Tạo phiếu</button>
-        </div>
+
     </div>
 </div>
+
+
 {% endblock %}

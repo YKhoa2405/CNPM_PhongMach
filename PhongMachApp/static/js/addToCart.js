@@ -1,3 +1,26 @@
+// Lấy giá trị từ localStorage khi trang được tải
+window.onload = function() {
+    const predictInput = document.getElementById('predict-input');
+    const symptomInput = document.getElementById('symptom-input');
+
+    if (localStorage.getItem('predictValue')) {
+        predictInput.value = localStorage.getItem('predictValue');
+    }
+
+    if (localStorage.getItem('symptomValue')) {
+        symptomInput.value = localStorage.getItem('symptomValue');
+    }
+};
+
+// Lưu giá trị khi người dùng nhập dữ liệu
+function saveInput() {
+    const predictInput = document.getElementById('predict-input').value;
+    const symptomInput = document.getElementById('symptom-input').value;
+
+    localStorage.setItem('predictValue', predictInput);
+    localStorage.setItem('symptomValue', symptomInput);
+}
+
 function addToCart(id, name, medicineUnit_id){
     event.preventDefault()
 
@@ -41,3 +64,6 @@ function deleteCart(id) {
         });
     }
 }
+
+
+/*thay đổi nội dung button*/

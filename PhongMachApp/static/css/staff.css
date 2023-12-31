@@ -49,3 +49,22 @@ body, h1, h2, p, ul, li {
 float:right;
 margin:20px 0px 0px 10px;
 }
+
+
+/* bác sĩ */
+.form-phieu{
+    background-color:#7386d5;
+    padding:40px;
+    border-radius:30px;
+    font-size:18px;}
+.form-phieu input{
+    font-size:18px;}
+
+button.btn.btn_addmedi{
+    padding-right:100px;
+    padding-left:100px;
+    font-size:25px;
+    margin-left:350px;
+    background-color: #32CD32;
+    color:white;}
+

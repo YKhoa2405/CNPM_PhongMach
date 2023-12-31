@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from flask import request
-
+from flask import session
 from PhongMachApp import app, db, sms
 from PhongMachApp.models import User, Medicine, MedicineUnit, Appointment, MedicalExamList
 import vonage
@@ -136,21 +136,21 @@ def get_patient_name(patient_id):
     return patient.name if patient else None
 
 # bác sĩ
-def get_medical_exams_by_date(target_date):
-    medical_exams = MedicalExamList.query \
-        .join(Appointment, MedicalExamList.appointment_id == Appointment.id) \
-        .filter(Appointment.calendar == target_date) \
-        .all()
-    return medical_exams
 
+#lấy ngày khám hôm nay trong medical exam list
+def get_medical_exams_by_date(target_date):
+    medical_exams = MedicalExamList.query.join(Appointment, MedicalExamList.appointment_id == Appointment.id).filter(Appointment.calendar == target_date).all()
+    return medical_exams
 def get_patient_info(appointment_id):
     appointment = Appointment.query.filter_by(id=appointment_id).first()
     if appointment:
         return {'name': appointment.name, 'appointment_date': appointment.calendar}
     return {'name': None, 'appointment_date': None}
-
-
 # thống kê, báo cáo
 # def medicines_stats(ks=None, from_date =None, to_date =None):
 
-
+def get_unit_name_by_id(unit_id):
+    unit = MedicineUnit.query.filter_by(id=unit_id).first()
+    if unit:
+        return unit.name
+    return None

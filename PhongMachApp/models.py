@@ -28,30 +28,23 @@ class User(Basemodel, UserMixin):
     user_role = Column(Enum(UserRole), default=UserRole.USER)
 
 
-class DatLichKham(Basemodel):
-    name = Column(String(50), nullable=False)
-    cccd = Column(String(50), nullable=False, unique=True)
-    gender = Column(String(10), nullable=False)
-    sdt = Column(String(20), nullable=False, unique=True)
-    birthday = Column(Date, nullable=False)
-    address = Column(String(255), nullable=False)
-    calendar = Column(Date, nullable=False)
-
-
-promissory_medicine = db.Table(  # bangr trung gian thuốc và phiếu khám
+Promissory_medicine = db.Table(  # CHI TIẾT PHIẾU THUỐC # bangr trung gian thuốc và phiếu khám
     'promissory_medicine',
+    db.Column('id', Integer, primary_key=True, autoincrement=True),
     db.Column('promissory_id', Integer, ForeignKey('promissory_note.id'), primary_key=True),
     db.Column('medicine_id', db.Integer, db.ForeignKey('medicine.id'), primary_key=True),
-    db.Column('quantiny', db.Integer),
-    db.Column('use_number', db.Integer)
-)
+    db.Column('quantiny', db.Integer),  # số lượng
+    db.Column('use_number', db.Integer),  # số lần dùng
+    db.Column('usage_detail',db.String(255)))
 
 
 class Promissory_note(Basemodel):  # Phiếu khám
-    ngay_kham = Column(Date, nullable=False)
-    trieu_chung = Column(String(100), nullable=False)
-    chan_doan = Column(String(100), nullable=False)
-    medicines = relationship('Medicine', secondary=promissory_medicine, backref='promissory_note', lazy=True)
+    date = Column(Date, nullable=False)  # ngày khám
+    symptom = Column(String(100), nullable=False)  # triệu chứng
+    forecast = Column(String(100), nullable=False)  # chẩn đoán
+    appointment_id = Column(Integer, ForeignKey('appointment.id'))  # ID của lịch hẹn
+    user_id = Column(Integer, ForeignKey('user.id'))  # ID của người lập phiếu
+    medicines = relationship('Medicine', secondary=Promissory_medicine, backref='promissory_note', lazy=True)
 
 
 class MedicineUnit(Basemodel):
@@ -79,7 +72,7 @@ class Medicine(Basemodel):
         return self.name
 
 
-class Appointment(Basemodel):
+class Appointment(Basemodel):  # LỊCH HẸN
     __tablename__ = 'appointment'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -91,6 +84,7 @@ class Appointment(Basemodel):
     calendar = db.Column(db.Date, nullable=False)
     medical_exam_lists = db.relationship('MedicalExamList',
                                          back_populates='appointment')  # Quan hệ với bảng MedicalExamList
+
 
 # Danh sách khám gửi cho bác sĩ
 class MedicalExamList(db.Model):  # Appointment list
@@ -104,6 +98,7 @@ class MedicalExamList(db.Model):  # Appointment list
     appointment_id = db.Column(db.Integer, db.ForeignKey('appointment.id'))  # Khóa ngoại mã cuộc hẹn
     appointment = db.relationship('Appointment', back_populates='medical_exam_lists')
 
+
 # Hóa đơn
 
 
@@ -114,6 +109,7 @@ class Regulation(Basemodel):
 
     def __str__(self):
         return self.name
+
 
 if __name__ == '__main__':
     with app.app_context():
