@@ -56,34 +56,31 @@
         </div>
         {% endif %}
         <form class="mt-4 form-phieu" action="/create_prescription" method="post">
-               <div class="form-group col-md-4 d-flex">
-                <label> Ngày khám </label>
-                <input type="date" name="date" class="form-control" value="{{ calendar }}"/>
+            <div class="form-group">
+                <label>Ngày khám:</label>
+                <input type="date" name="date" class="form-control" value="{{ calendar }}" readonly/>
             </div>
-
             <div class="row">
-                <div class="form-group col-md-6 d-flex">
-                    <label>ID bệnh nhân</label>
+                <div class="form-group col-md-4">
+                    <label>ID bệnh nhân:</label>
                     <input type="text" class="form-control" name="appointment_id" value="{{ appointment_id }}">
                 </div>
-                <div class="form-group col-md-6 d-flex">
-                    <label> Họ tên bệnh nhân</label>
+                <div class="form-group col-md-8">
+                    <label> Họ tên bệnh nhân:</label>
                     <input type="text" class="form-control" name="name" value="{{ name }}">
                 </div>
 
             </div>
 
-            <div class="row">
-                <div class="form-group col-md-6  d-flex">
-                    <label>Triệu chứng</label>
-                    <input type="text" id="symptom-input" onkeyup="saveInput()" placeholder="Triệu chứng"
-                           name="symptom" class="form-control"/>
-                </div>
-                <div class="form-group col-md-6 d-flex">
-                    <label>Chẩn đoán bệnh </label>
-                    <input type="text" id="predict-input" onkeyup="saveInput()" placeholder="Dự đoán loại bệnh"
-                           name="forecast" class="form-control"/>
-                </div>
+            <div class="form-group">
+                <label>Triệu chứng:</label>
+                <input type="text" id="symptom-input" onkeyup="saveInput()" placeholder="Triệu chứng"
+                       name="symptom" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>Chẩn đoán bệnh: </label>
+                <input type="text" id="predict-input" onkeyup="saveInput()" placeholder="Dự đoán loại bệnh"
+                       name="forecast" class="form-control"/>
             </div>
 
             <!--            kiểm tra khác null-->
@@ -133,7 +130,6 @@
             {% else %}
             <p>Không có đơn thuốc nào</p>
             {% endif %}
-
             <button type="submit" class="btn btn_addmedi mt-5 float-end">Tạo phiếu</button>
         </form>
 

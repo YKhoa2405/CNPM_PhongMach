@@ -1,5 +1,4 @@
-import math
-import re
+import math, re
 from flask import render_template, request, redirect, url_for, session, jsonify, flash
 from flask_login import login_user, logout_user
 from sqlalchemy import func

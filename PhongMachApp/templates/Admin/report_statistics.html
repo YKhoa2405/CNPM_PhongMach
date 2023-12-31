@@ -3,11 +3,89 @@
 {% block content %}
 <h1 class="text-center">THỐNG KÊ BÁO CÁO</h1>
 <div class="content-wrap">
-    <button>Doanh thu theo tháng</button>
-    <button>Tần suất khám</button>
-    <button>Tần suất sử dụng thuốc</button>
+    <button onclick="showContent('content1')">Doanh thu theo tháng</button>
+    <button onclick="showContent('content2')">Tần suất khám</button>
+    <button onclick="showContent('content3')">Tần suất sử dụng thuốc</button>
 </div>
-<div class="container" style="margin-top:20px;">
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="sel1">Chọn tháng:</label>
+            <select class="form-control" id="sel1" name="sellist1">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Lọc kết quả</button>
+    </form>
+</div>
+<!--Doanh thu theo tháng-->
+<div class="container" id="content1" style="margin-top:20px;">
+    <div class="title">Doanh thu theo tháng</div>
+    <div class="row">
+        <div class="col-md-6 col-xs-12">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Tháng</th>
+                    <th>Doanh thu</th>
+                    <th>Tỉ lệ(%)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6 col-xs-12">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+</div>
+<!--Tần suất khám-->
+<div class="container" id="content2" style="margin-top:20px;">
+    <div class="title">Tần suất khám</div>
+    <div class="row">
+        <div class="col-md-6 col-xs-12">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Tháng</th>
+                    <th>Số bệnh nhân</th>
+                    <th>Tỉ lệ(%)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6 col-xs-12">
+            <canvas id="medicalChart"></canvas>
+        </div>
+    </div>
+</div>
+<!--tần suất sử dụng thuốc-->
+<div class="container " id="content3" style="margin-top:20px;">
+    <div class="title">Tần suất sử dụng thuốc</div>
     <div class="row">
         <div class="col-md-6 col-xs-12">
             <table class="table table-striped">
@@ -16,7 +94,7 @@
                     <th>Mã thuốc</th>
                     <th>Tên thuốc</th>
                     <th>Số Lượng</th>
-                    <th>Định dạng</th>
+                    <th>Số lần dùng</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,7 +104,6 @@
                     <td></td>
                     <td></td>
                 </tr>
-
                 </tbody>
             </table>
         </div>
@@ -38,15 +115,32 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+     let labels = []
+     let datasets = []
+
+
+
     window.onload = function() {
-        const ctx = document.getElementById('medicineChart');
-        new Chart(ctx, {
-            type: 'doughnut',
+        const ctxRevenue = document.getElementById('revenueChart');
+        const ctxMedical = document.getElementById('medicalChart');
+        const ctxMedicine = document.getElementById('medicineChart');
+
+        const labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'];
+        const datasets = [12, 19, 3, 5, 2, 3];
+
+        loadChart(ctxRevenue, 'bar', 'Thống kê doanh thu theo tháng', labels, datasets);
+        loadChart(ctxMedical, 'line', 'Thống kê tần suất khám', labels, datasets);
+        loadChart(ctxMedicine, 'doughnut', 'Thống kê tần suất sử dụng thuốc', labels, datasets);
+    }
+
+    function loadChart(ctx, type, label, labels, datasets) {
+        const myChart = new Chart(ctx, {
+            type: type,
             data: {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                labels: labels,
                 datasets: [{
-                    label: 'Tần xuất sử dụng thuốc',
-                    data: [12, 19, 3, 5, 2, 3],
+                    label: label,
+                    data: datasets,
                     borderWidth: 1
                 }]
             },
@@ -58,6 +152,16 @@
                 }
             }
         });
+    }
+</script>
+
+<script>
+    function showContent(contentId) {
+      document.getElementById('content1').style.display = 'none';
+      document.getElementById('content2').style.display = 'none';
+      document.getElementById('content3').style.display = 'none';
+
+      document.getElementById(contentId).style.display = 'block';
     }
 </script>
 

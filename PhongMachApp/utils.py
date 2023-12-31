@@ -3,8 +3,10 @@ from datetime import datetime
 
 from flask import request
 from flask import session
+from sqlalchemy import func
+
 from PhongMachApp import app, db, sms
-from PhongMachApp.models import User, Medicine, MedicineUnit, Appointment, MedicalExamList
+from PhongMachApp.models import User, Medicine, MedicineUnit, Appointment, MedicalExamList, Promissory_medicine
 import vonage
 # Băm mật khẩu
 import hashlib
@@ -40,6 +42,7 @@ def check_login(email, password):
         # password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
         return User.query.filter(User.email.__eq__(email.strip()),
                                  User.password.__eq__(password)).first()
+
 
 def get_prev_url():
     referer = request.headers.get('Referer')
@@ -121,7 +124,6 @@ def send_appointment_date_to_patient(patient_phone_number, appointment_date):
         print(f"Message to {patient_phone_number} failed with error: {response['messages'][0]['error-text']}")
 
 
-
 def format_date(input_date):
     # Chuyển đổi ngày từ chuỗi "YYYY-MM-DD" sang đối tượng datetime
     formatted_date = datetime.strptime(input_date, "%Y-%m-%d")
@@ -131,26 +133,39 @@ def format_date(input_date):
 
     return result_date
 
+
 def get_patient_name(patient_id):
     patient = Appointment.query.filter_by(id=patient_id).first()
     return patient.name if patient else None
 
+
 # bác sĩ
 
-#lấy ngày khám hôm nay trong medical exam list
+# lấy ngày khám hôm nay trong medical exam list
 def get_medical_exams_by_date(target_date):
-    medical_exams = MedicalExamList.query.join(Appointment, MedicalExamList.appointment_id == Appointment.id).filter(Appointment.calendar == target_date).all()
+    medical_exams = MedicalExamList.query.join(Appointment, MedicalExamList.appointment_id == Appointment.id).filter(
+        Appointment.calendar == target_date).all()
     return medical_exams
+
+
 def get_patient_info(appointment_id):
     appointment = Appointment.query.filter_by(id=appointment_id).first()
     if appointment:
         return {'name': appointment.name, 'appointment_date': appointment.calendar}
     return {'name': None, 'appointment_date': None}
-# thống kê, báo cáo
-# def medicines_stats(ks=None, from_date =None, to_date =None):
+
 
 def get_unit_name_by_id(unit_id):
     unit = MedicineUnit.query.filter_by(id=unit_id).first()
     if unit:
         return unit.name
     return None
+
+
+# thống kê, báo cáo
+def medicines_stats(ks=None, from_date=None, to_date=None):
+    # m = db.session.query(Medicine.id, Medicine.name, func.sum(Promissory_medicine))\
+    #     .join(Promissory_medicine,Promissory_medicine.c.medicine_id.__eq__(Medicine.id))\
+    #     .group_by(Medicine.id, Medicine.name)
+
+    return m.all()

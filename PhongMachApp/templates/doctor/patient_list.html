@@ -26,13 +26,11 @@
                 {% endfor %}
                 {% endif %}
                 {% endwith %}
-                <h1 class="text-center text-info">DANH SÁCH KHÁM BỆNH HÔM NAY </h1>
-                <p class="text-dark"> NGÀY KHÁM : {{ target_date }}</p>
+                <h1 class="text-center text-info">DANH SÁCH KHÁM BỆNH NGÀY:  {{ target_date }}</h1>
                 <table class=" container mt-3 table table-striped table-info ">
                     <thead>
                     <tr>
                         <th>STT</th>
-                        <th> ID bệnh nhân</th>
                         <th>Tên bệnh nhân</th>
                         <th>CCCD</th>
                         <th>Giới tính</th>
@@ -47,7 +45,6 @@
                     {% for exam in medical_exams %}
                     <tr>
                         <td>{{ loop.index }}</td>
-                        <td>{{ exam.appointment.id}}</td>
                         <td>{{ exam.appointment.name }}</td>
                         <td>{{ exam.appointment.cccd }}</td>
                         <td>{{ exam.appointment.gender }}</td>

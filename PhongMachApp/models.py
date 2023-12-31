@@ -35,7 +35,7 @@ Promissory_medicine = db.Table(  # CHI TIẾT PHIẾU THUỐC # bangr trung gian
     db.Column('medicine_id', db.Integer, db.ForeignKey('medicine.id'), primary_key=True),
     db.Column('quantiny', db.Integer),  # số lượng
     db.Column('use_number', db.Integer),  # số lần dùng
-    db.Column('usage_detail',db.String(255)))
+    db.Column('usage_detail', db.String(255)))
 
 
 class Promissory_note(Basemodel):  # Phiếu khám

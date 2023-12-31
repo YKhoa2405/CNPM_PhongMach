@@ -44,7 +44,10 @@ class ChangeRegulationView(AdminView):
 class ReportStatistics(AdminBaseView):
     @expose('/')
     def index(self):
-        return self.render('/admin/report_statistics.html')
+        from PhongMachApp import utils
+        return self.render('/admin/report_statistics.html', medicine_chart=utils.medicines_stats())
+
+
 
 
 class LogoutView(BaseView):
