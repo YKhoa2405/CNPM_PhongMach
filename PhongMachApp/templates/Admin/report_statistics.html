@@ -2,33 +2,11 @@
 
 {% block content %}
 <h1 class="text-center">THỐNG KÊ BÁO CÁO</h1>
-<div class="content-wrap">
-    <button onclick="showContent('content1')">Doanh thu theo tháng</button>
-    <button onclick="showContent('content2')">Tần suất khám</button>
-    <button onclick="showContent('content3')">Tần suất sử dụng thuốc</button>
-</div>
-<div class="container">
-    <form>
-        <div class="form-group">
-            <label for="sel1">Chọn tháng:</label>
-            <select class="form-control" id="sel1" name="sellist1">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Lọc kết quả</button>
-    </form>
-</div>
+<!--<div class="content-wrap">-->
+<!--    <button onclick="showContent('content1')">Doanh thu theo tháng</button>-->
+<!--    <button onclick="showContent('content2')">Tần suất khám</button>-->
+<!--    <button onclick="showContent('content3')">Tần suất sử dụng thuốc</button>-->
+<!--</div>-->
 <!--Doanh thu theo tháng-->
 <div class="container" id="content1" style="margin-top:20px;">
     <div class="title">Doanh thu theo tháng</div>
@@ -70,15 +48,36 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% set total_patients = 0 %}
+
+                {% for medi in medical_chart %}
+                {% set total_patients = total_patients + medi[1]|int %}
+
+                {% endfor %}
+
+                {% for medi in medical_chart %}
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ medi[0] }}</td>
+                    <td>{{ medi[1] }}</td>
+                    <td>
+                        <!--                        {% set ratio = (medi[1] / total_patients * 100) if total_patients > 0 else 0 %}-->
+                        {{ total_patients }}%
+                    </td>
                 </tr>
+                {% endfor %}
+
                 </tbody>
             </table>
         </div>
         <div class="col-md-6 col-xs-12">
+            <form>
+                <div class="form-group">
+                    <input type="number" min="2020" max="3000"
+                           name="year"
+                           class="form-control" placeholder="Nhập năm...">
+                </div>
+                <input type="submit" value="Thống kê" class="btn btn-primary">
+            </form>
             <canvas id="medicalChart"></canvas>
         </div>
     </div>
@@ -99,70 +98,102 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    {% for m in medicine_chart%}
+                <tr>
+                    <td>{{ m[0] }}</td>
+                    <td>{{ m[1] }}</td>
+                    <td>{{ m[2] }}</td>
+                    <td>{{ m[3] }}</td>
                 </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
         <div class="col-md-6 col-xs-12">
+            <form>
+                <div class="form-group">
+                    <input type="text"
+                           name="kw"
+                           class="form-control" placeholder="Nhập tên thuốc...">
+                </div>
+                <input type="submit" value="Thống kê" class="btn btn-primary">
+            </form>
             <canvas id="medicineChart"></canvas>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
-     let labels = []
-     let datasets = []
+    let labels_medicine = [], labels_revenue = [], labels_medical = []
+    let datasets_medicine = [],datasets_revenue = [],datasets_medical = []
+
+<!--thống kê thuốc-->
+    {% for m in medicine_chart %}
+
+    labels_medicine.push('{{ m[1] }}')
+    datasets_medicine.push({{ m[3] }})
+
+    {% endfor %}
+
+    <!--thống kê lượng bệnh nhân theo tháng-->
+    {% for medi in medical_chart %}
+
+    labels_medical.push('{{ medi[0] }}')
+    datasets_medical.push({{ medi[1] }})
+
+    {% endfor %}
 
 
 
-    window.onload = function() {
-        const ctxRevenue = document.getElementById('revenueChart');
-        const ctxMedical = document.getElementById('medicalChart');
-        const ctxMedicine = document.getElementById('medicineChart');
+   window.onload = function() {
+       const ctxRevenue = document.getElementById('revenueChart');
+       const ctxMedical = document.getElementById('medicalChart');
+       const ctxMedicine = document.getElementById('medicineChart');
 
-        const labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'];
-        const datasets = [12, 19, 3, 5, 2, 3];
+       const labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'];
+       const datasets = [12, 19, 3, 5, 2, 3];
 
-        loadChart(ctxRevenue, 'bar', 'Thống kê doanh thu theo tháng', labels, datasets);
-        loadChart(ctxMedical, 'line', 'Thống kê tần suất khám', labels, datasets);
-        loadChart(ctxMedicine, 'doughnut', 'Thống kê tần suất sử dụng thuốc', labels, datasets);
-    }
+       loadChart(ctxRevenue, 'bar', 'Doanh thu theo tháng', labels, datasets);
+       loadChart(ctxMedical, 'line', 'Tần suất khám theo tháng', labels_medical, datasets_medical);
+       loadChart(ctxMedicine, 'doughnut', 'Số lần sử dụng thuốc', labels_medicine, datasets_medicine);
+   }
 
-    function loadChart(ctx, type, label, labels, datasets) {
-        const myChart = new Chart(ctx, {
-            type: type,
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: label,
-                    data: datasets,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
+   function loadChart(ctx, type, label, labels, datasets) {
+       const myChart = new Chart(ctx, {
+           type: type,
+           data: {
+               labels: labels,
+               datasets: [{
+                   label: label,
+                   data: datasets,
+                   borderWidth: 1
+               }]
+           },
+           options: {
+               scales: {
+                   y: {
+                       beginAtZero: true
+                   }
+               }
+           }
+       });
+   }
 </script>
 
-<script>
-    function showContent(contentId) {
-      document.getElementById('content1').style.display = 'none';
-      document.getElementById('content2').style.display = 'none';
-      document.getElementById('content3').style.display = 'none';
+<!--<script>-->
+<!--    function showContent(contentId) {-->
+<!--      document.getElementById('content1').style.display = 'none';-->
+<!--      document.getElementById('content2').style.display = 'none';-->
+<!--      document.getElementById('content3').style.display = 'none';-->
 
-      document.getElementById(contentId).style.display = 'block';
-    }
-</script>
+<!--      document.getElementById(contentId).style.display = 'block';-->
+<!--    }-->
+<!--</script>-->
+
+
+
+
 
 {% endblock %}

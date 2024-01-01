@@ -3,10 +3,10 @@ from datetime import datetime
 
 from flask import request
 from flask import session
-from sqlalchemy import func
+from sqlalchemy import func, extract
 
 from PhongMachApp import app, db, sms
-from PhongMachApp.models import User, Medicine, MedicineUnit, Appointment, MedicalExamList, Prescription
+from PhongMachApp.models import User, Medicine, MedicineUnit, Appointment, MedicalExamList, Prescription, PromissoryNote
 import vonage
 # Băm mật khẩu
 import hashlib
@@ -163,9 +163,21 @@ def get_unit_name_by_id(unit_id):
 
 
 # thống kê, báo cáo
-# def medicines_stats(ks=None, from_date=None, to_date=None):
-#     # m = db.session.query(Medicine.id, Medicine.name, func.sum(Promissory_medicine))\
-#     #     .join(Promissory_medicine,Promissory_medicine.c.medicine_id.__eq__(Medicine.id))\
-#     #     .group_by(Medicine.id, Medicine.name)
-#
-#     return m.all()
+def medicines_stats(kw):
+    m = db.session.query(Medicine.id, Medicine.name, func.sum(Prescription.quantity), func.sum(Prescription.use_number))\
+        .join(Prescription, Prescription.medicine_id.__eq__(Medicine.id))\
+        .group_by(Medicine.id, Medicine.name)
+
+    if kw:
+        m = m.filter(Medicine.name.contains(kw))
+
+    return m.all()
+
+
+def medical_stats(year):
+    medi = db.session.query(
+        func.extract('month', PromissoryNote.date),
+        func.count(PromissoryNote.id)
+    ).group_by(func.extract('month', PromissoryNote.date)).filter(extract('year', PromissoryNote.date).__eq__(year)).order_by(extract('month', PromissoryNote.date))
+
+    return medi.all()
