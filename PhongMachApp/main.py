@@ -70,21 +70,23 @@ def user_login():
         email = request.form.get('email')
         password = request.form.get('password')
         user = utils.check_login(email=email, password=password)
+
         if user:
             login_user(user=user)
+            session['name'] = user.name
+            session['user_role'] = user.user_role.value
             if user.user_role == UserRole.DOCTOR:
-                return render_template('doctor/patient_list.html')
+                return redirect('doctor/patient_list')
             elif user.user_role == UserRole.NURSE:
                 # Add the corresponding action for nurses, for example:
-                return render_template('nurse/nurse_home.html')
+                return redirect('show_result')
             elif user.user_role == UserRole.CASHIER:
                 # Add the corresponding action for nurses, for example:
-                return render_template('cashier/cashier_home.html')
+                return redirect('cashier')
             else:
                 return redirect(url_for('index'))
         else:
             err_msg = "Email hoặc mật khẩu không chính xác."
-
     return render_template('login.html', err_msg=err_msg)
 
 
@@ -122,7 +124,6 @@ def datLichKham():
 
 
 # Danh sách bệnh nhân khám theo ngày đươcj y tá lọc
-# doctor
 @app.route('/doctor/patient_list')
 def doctor_patient_list():
     today = date.today()  # Lấy ngày hiện tại
@@ -132,7 +133,6 @@ def doctor_patient_list():
                        PromissoryNote.query.all()]  # LẤY ID NHỮNG CUỘC HẸN RA ĐỂ CUSTOM BUTTON
     return render_template('doctor/patient_list.html', medical_exams=medical_exams, target_date=today,
                            appointment_ids=appointment_ids)
-
 
 # Lap phieu kham
 @app.route('/examination_form/<int:appointment_id>')
@@ -230,12 +230,9 @@ def create_prescription():
         return redirect('/doctor/patient_list')
 
 
-# trang y tá
-@app.route("/nurse")
-def nurse_home():
-    return render_template('nurse/nurse_home.html')
 
 
+# HIỂN THỊ DANH SÁCH BỆNH NHÂN ĐK
 @app.route('/result', methods=['POST', 'GET'])
 def add_patient():
     if request.method == 'POST':
@@ -264,23 +261,22 @@ def add_patient():
         # Lấy danh sách bệnh nhân từ cơ sở dữ liệu
         appointments = Appointment.query.all()
 
-        # Cập nhật lại ID cho từng bệnh nhân
-        new_id = 1
-        for appoinment in appointments:
-            appoinment.id = new_id
-            new_id += 1
+        # # Cập nhật lại ID cho từng bệnh nhân
+        # new_id = 1
+        # for appoinment in appointments:
+        #     appoinment.id = new_id
+        #     new_id += 1
 
     db.session.commit()
     flash('THÊM THÔNG TIN KHÁM BỆNH NHÂN THÀNH CÔNG', 'success')
     return redirect(url_for('show_result'))
 
-
-# Route hiển thị danh sách bệnh nhân
 @app.route('/show_result')
 def show_result():
     appointments = Appointment.query.all()
-    return render_template('nurse/patient_list.html', appointments=appointments)
-
+    appointment_list = MedicalExamList.query.all()  # Danh sách đã lập
+    filtered_appointments = [appointment for appointment in appointments if appointment.id not in [item.appointment_id for item in appointment_list]]
+    return render_template('nurse/patient_list.html', appointments=filtered_appointments)
 
 # xóa bệnh nhân khỏi db
 @app.route('/patients/<int:appointment_id>/delete', methods=['POST'])
@@ -289,11 +285,11 @@ def delete_patient(appointment_id):
     db.session.delete(appointment)
     db.session.commit()
     appointments = Appointment.query.all()
-    new_id = 1
-
-    for appoinment in appointments:
-        appoinment.id = new_id
-        new_id += 1
+    # new_id = 1
+    #
+    # for appoinment in appointments:
+    #     appoinment.id = new_id
+    #     new_id += 1
 
     db.session.commit()
     return flash('Xóa bệnh nhân thành công', 'success')
@@ -303,19 +299,27 @@ def delete_patient(appointment_id):
 @app.route('/get_patients_by_date', methods=['GET'])
 def get_patients_by_date():
     selected_date = request.args.get('ngayKham')
+
+    # Danh sách bệnh nhân đã có trong MedicalExamList
+    appointments_in_list = [medical_exam.appointment_id for medical_exam in
+                            MedicalExamList.query.filter_by(appointment_date=selected_date).all()]
+
+    # Lọc danh sách các bệnh nhân chưa có trong danh sách khám
     appointments = Appointment.query.filter_by(calendar=selected_date).all()
-    appointment_count = len(appointments)
+    appointments_not_in_list = [appointment for appointment in appointments if
+                                appointment.id not in appointments_in_list]
+
+    appointment_count = len(appointments_not_in_list)
+
     if appointment_count == 0:
         flash('Không có bệnh nhân đăng ký lịch khám vào ngày này !!!', 'danger')
         return redirect(url_for('show_result'))
+
     # Lưu danh sách bệnh nhân vào session
-    session['selected_patients'] = [appointment.id for appointment in appointments]
+    session['selected_patients'] = [appointment.id for appointment in appointments_not_in_list]
 
-    return render_template('nurse/patient_list_by_date.html', appointments=appointments,
+    return render_template('nurse/patient_list_by_date.html', appointments=appointments_not_in_list,
                            appointment_count=appointment_count, selected_date=selected_date)
-
-
-# lập ds khám
 
 # lập ds khám
 @app.route('/appointment_list', methods=['POST'])

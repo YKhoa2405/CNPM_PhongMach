@@ -52,7 +52,7 @@ class Medicine(Basemodel):
 
     def __str__(self):
         return self.name
-class PromissoryNote(Basemodel):
+class PromissoryNote(Basemodel):#PHIẾU KHÁM
     __tablename__ = 'promissory_note'
 
     date = Column(Date, nullable=False)
@@ -65,7 +65,7 @@ class PromissoryNote(Basemodel):
     appointment = relationship("Appointment", backref="promissory_notes")
 
     prescriptions = relationship("Prescription", backref="promissory_note")# đơn thuốc
-class Prescription(db.Model):
+class Prescription(db.Model):# chi tiết phiếu thuốc
     __tablename__ = 'prescription'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -75,7 +75,7 @@ class Prescription(db.Model):
     use_number = db.Column(db.Integer)
     usage_detail = db.Column(db.String(255))
 
-    # Define relationships if needed
+
     related_promissory_note = relationship("PromissoryNote", backref="related_prescriptions")
     medicine = db.relationship('Medicine')
 

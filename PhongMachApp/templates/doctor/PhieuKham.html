@@ -1,29 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Phiếu khám</title>
-    <script src="https://kit.fontawesome.com/6f688f08b3.js" crossorigin="anonymous"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="/static/css/nurse_home.css">
-    <link rel="stylesheet" href="/static/css/staff.css">
-    <link rel="stylesheet" href="/static/css/doctor.css">
-</head>
-<body>
-<div class="container-fluid">
-    <!--header side bar-->
-    <div class="row sidebar flex-nowrap">
-        {% include 'doctor/header.html' %}
+{% extends 'staff_base.html' %}
 
+{% block title %} Phiếu khám bệnh{% endblock %}
 
-        <!--body-->
-        <div class="  content-side col py-3">
-            <div class="content_staff">
+{% block content %}
+   <div class=" content-side col py-3">
+            <div class="content_staff mt-3">
                 <div class="container-fluid medicine">
-                    <h2 class="title">Tra cứu thông tin thuốc</h2>
-                    <p>Chính thống - minh bạch - hiệu quả</p>
+                    <h2 class="title text-center">Tra cứu thông tin thuốc</h2>
+                    <p class="text-center">Chính thống - minh bạch - hiệu quả</p>
                     <div class="search-medicine">
                         <form class="form-inline">
                             <div class="input-group">
@@ -67,33 +51,39 @@
                     {% endif%}
                 </div>
 
-                <div class="container form-phieu ">
-                    <h1 class="text-center text-light">PHIẾU KHÁM BỆNH</h1>
+                <div class="container form-phieu mt-3 ">
+                    <h1 class="text-center text-dark">PHIẾU KHÁM BỆNH</h1>
                     {% if err_msg %}
                     <div class="alert alert-danger">
                         <h1>{{ err_msg }}</h1>
                     </div>
                     {% endif %}
-                    <form class="mt-4 form-phieu" action="/create_prescription" method="post">
-                        <div class="form-group col-md-4 d-flex">
-                            <label> Ngày khám </label>
-                            <input type="date" name="date" class="form-control" value="{{ calendar }}"/>
-                        </div>
-
-                        <div class="row">
+                    <form class="mt-4 form-phieu" action="/create_prescription" method="post" onsubmit="clearInput()">
+                           <div class="row">
                             <div class="form-group col-md-6 d-flex">
                                 <label>ID bệnh nhân</label>
                                 <input type="text" class="form-control" name="appointment_id"
                                        value="{{ appointment_id }}">
                             </div>
+                            <div class="form-group col-md-6" >
+                                <button class="btn btn-secondary mt-2" style="width:400px;padding:10px;" type="button">Xem lịch sử khám</button>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="form-group col-md-6 d-flex">
+                                <label> Ngày khám </label>
+                                <input type="date" name="date" class="form-control" value="{{ calendar }}"/>
+                            </div>
                             <div class="form-group col-md-6 d-flex">
                                 <label> Họ tên bệnh nhân</label>
                                 <input type="text" class="form-control" name="name" value="{{ name }}">
                             </div>
-
                         </div>
 
-                        <div class="row">
+
+
+
+                        <div class="row mt-4">
                             <div class="form-group col-md-6  d-flex">
                                 <label>Triệu chứng</label>
                                 <input type="text" id="symptom-input" onkeyup="saveInput()" placeholder="Triệu chứng"
@@ -101,14 +91,15 @@
                             </div>
                             <div class="form-group col-md-6 d-flex">
                                 <label>Chẩn đoán bệnh </label>
-                                <input type="text" id="predict-input" onkeyup="saveInput()" placeholder="Dự đoán loại bệnh"
+                                <input type="text" id="predict-input" onkeyup="saveInput()"
+                                       placeholder="Dự đoán loại bệnh"
                                        name="forecast" class="form-control"/>
                             </div>
                         </div>
 
                         <!--            kiểm tra khác null-->
                         {% if 'cart' in session and session['cart'] %}
-                        <div>
+                        <div class=" bg-base">
                             <div class="row mt-3" style="text-align:center; font-weight:bold; font-size:18px;">
                                 <div class="col-3">
                                     <p>Tên thuốc</p>
@@ -133,7 +124,7 @@
                                 <div class="col-3">
                                     <input type="text" class="form-control" name="name_medi" value="{{ c.name }}  ">
                                 </div>
-                                <div class="col-1">
+                                <div class="col-1" >
                                     <input type="text" class="form-control" name="unit_medi"
                                            value="{{ c.medicine_unit_name }}">
                                 </div>
@@ -141,12 +132,13 @@
                                     <input type="text" class="form-control" name="count_medi" value="{{ c.quantity }} ">
                                 </div>
                                 <div class="col-5">
-                                    <input type="text" class="form-control" name="usage">
+                                    <input type="text" class="form-control" id="usage-input" name="usage"
+                                           onkeyup="saveInput()">
                                 </div>
                                 <div class="col-1">
-                                    <button type="button" class="btn btn-outline-danger"
+                                    <button type="button" class="bg-danger btn btn-outline-danger mt-2"
                                             onclick="deleteCart({{ c.id }})"><i
-                                            class="fa fa-trash" style="color: #ff0000;"></i></button>
+                                            class="fa fa-trash" style="color: #fff;"></i></button>
 
                                 </div>
                             </div>
@@ -155,15 +147,12 @@
                         {% else %}
                         <p>Không có đơn thuốc nào</p>
                         {% endif %}
-                        <button type="submit" class="btn btn_addmedi mt-3">Tạo phiếu</button>
+                        <button type="submit" class="btn btn_addmedi mt-3">TẠO PHIẾU</button>
                     </form>
 
 
                 </div>
             </div>
         </div>
-    </div>
-</div><!-- end container-->
-<script src="/static/js/addToCart.js"></script>
-</body>
-</html>
+
+{% endblock %}

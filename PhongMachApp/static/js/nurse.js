@@ -3,6 +3,7 @@ var selectedDate = ''; // Đây là biến lưu trữ ngày khám được chọ
 document.addEventListener("DOMContentLoaded", function() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('ngayKham').setAttribute('min', today);
+
 });
 
 
@@ -44,52 +45,57 @@ function filterByDate() {
     window.location.href = `/get_patients_by_date?ngayKham=${selectedDate}`;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    var ngayKhamInput = document.getElementById('ngayKham');
-    if (selectedDate !== '') {
-        ngayKhamInput.value = selectedDate;
-    }
+//document.addEventListener('DOMContentLoaded', function() {
+//    var ngayKhamInput = document.getElementById('ngayKham');
+//    if (selectedDate !== '') {
+//        ngayKhamInput.value = selectedDate;
+//    }
+//
+//    ngayKhamInput.addEventListener('change', function() {
+//        selectedDate = this.value;
+//    });
+//});
+//function createAppointmentList() {
+//    var selectedDate = document.getElementById('ngayKham').value;
+//
+//    if (!selectedDate) {
+//        alert('Vui lòng chọn ngày khám.');
+//        return; // Không làm gì cả nếu ngày khám trống
+//    }
+//
+//    // Tiếp tục với việc gửi dữ liệu lên server nếu ngày khám đã được chọn
+//    // Gọi hàm hoặc yêu cầu fetch tại đây
+//}
+//function getAppointmentDate() {
+//    var ngayKhamInput = document.getElementById('ngayKham');
+//    var selectedDate = ngayKhamInput.value;
+//    // Sử dụng biến selectedDate cho việc xử lý tiếp theo
+//    console.log("Ngày khám được chọn:", selectedDate);
+//    return selectedDate;
+//}
 
-    ngayKhamInput.addEventListener('change', function() {
-        selectedDate = this.value;
-    });
-});
-function createAppointmentList() {
-    var selectedDate = document.getElementById('ngayKham').value;
-
-    if (!selectedDate) {
-        alert('Vui lòng chọn ngày khám.');
-        return; // Không làm gì cả nếu ngày khám trống
-    }
-
-    // Tiếp tục với việc gửi dữ liệu lên server nếu ngày khám đã được chọn
-    // Gọi hàm hoặc yêu cầu fetch tại đây
-}
-function getAppointmentDate() {
-    var ngayKhamInput = document.getElementById('ngayKham');
-    var selectedDate = ngayKhamInput.value;
-    // Sử dụng biến selectedDate cho việc xử lý tiếp theo
-    console.log("Ngày khám được chọn:", selectedDate);
-    return selectedDate;
-}
-
-function deleteAppointment(appointmentId) {
-    // Gửi yêu cầu xóa đến server
-    fetch(`/delete_appointment/${appointmentId}`, {
-        method: 'DELETE',
-    })
-    .then(response => {
-        if (response.ok) {
-            // Xóa thành công: cập nhật giao diện hoặc thông báo
-            console.log('Xóa thành công');
-            // Cập nhật giao diện sau khi xóa, ví dụ: reload trang
-            window.location.reload();
-        } else {
-            // Xử lý lỗi nếu cần
-            console.error('Xóa không thành công');
-        }
-    })
-    .catch(error => {
-        console.error('Lỗi:', error);
-    });
-}
+//
+////XÓA Appointment khỏi session chỗ trang danh sách khám theo ngày
+//function deletePatientFromSession(rowId) {
+//    console.log("Appointment ID to delete:", rowId);
+//    var confirmed = confirm("Bạn có chắc chắn muốn xóa bệnh nhân này không?");
+//    if (confirmed) {
+//        $.ajax({
+//            url: '/delete_from_session/' + rowId,
+//            type: 'GET',
+//            success: function(response) {
+//                if (response.success) {
+//                    var rowToDelete = document.getElementById('row_' + rowId);
+//                    if (rowToDelete) {
+//                        rowToDelete.remove(); // Xóa hàng khỏi DOM
+//                    }
+//                } else {
+//                    alert('Không thể xóa bệnh nhân khỏi session.');
+//                }
+//            },
+//            error: function() {
+//                alert('Đã xảy ra lỗi khi thực hiện yêu cầu xóa.');
+//            }
+//        });
+//    }
+//}

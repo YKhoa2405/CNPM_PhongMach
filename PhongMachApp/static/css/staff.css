@@ -35,8 +35,8 @@ body, h1, h2, p, ul, li {
 }
 /*content doctor*/
 .content_staff{
-    width:75%;
-    margin-left:25%;
+    width:80%;
+    margin-left:10%;
     padding:1px 16px;
     height:100%;
 }
@@ -53,13 +53,15 @@ margin:20px 0px 0px 10px;
 
 /* bác sĩ */
 .form-phieu{
-    background-color:#7386d5;
+    background-color:#B0C4DE;
     padding:40px;
     border-radius:30px;
+    color:black;
     font-size:18px;}
 .form-phieu input{
     font-size:18px;}
-
+h1{
+color:black;}
 button.btn.btn_addmedi{
     padding-right:100px;
     padding-left:100px;
@@ -68,3 +70,5 @@ button.btn.btn_addmedi{
     background-color: #32CD32;
     color:white;}
 
+.bg-base{
+border-radius:10px;}

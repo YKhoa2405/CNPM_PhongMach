@@ -11,7 +11,10 @@ window.onload = function() {
         symptomInput.value = localStorage.getItem('symptomValue');
     }
 };
-
+function clearInput() {
+    localStorage.removeItem('predictValue');
+    localStorage.removeItem('symptomValue');
+}
 // Lưu giá trị khi người dùng nhập dữ liệu
 function saveInput() {
     const predictInput = document.getElementById('predict-input').value;

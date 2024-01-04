@@ -149,3 +149,6 @@ padding-top:150px;}
     /* Các thuộc tính khác để thiết lập kiểu dáng cho div */
    height: 100vh;
 }
+
+button.btn-del{
+border: none;}

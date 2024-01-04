@@ -7,31 +7,39 @@
         </div>
         <ul class="sidebar-item nav nav-pills flex-column pt-2 mb-sm-auto align-items-center align-items-sm-start"
             id="menu">
+            {% if 'user_role' in session %}
+            {% if session['user_role'] == 2 %}
             <li>
                 <a href="/show_result" class="nav-link px-0 align-middle">
-                    Danh sách bệnh nhân</a>
+                    Danh sách bệnh nhân chờ</a>
             </li>
             <li>
-                <a href="#" class=" btn-dkkham nav-link px-0 align-middle" data-bs-toggle="modal" data-bs-target="#myModal">
+                <a href="#" class=" btn-dkkham nav-link px-0 align-middle" data-bs-toggle="modal"
+                   data-bs-target="#myModal">
                     Đăng ký khám </a>
             </li>
+            {% elif session['user_role'] == 4 %}
             <li>
-                <a href="#submenu2"  class="nav-link px-0 align-middle ">
-                    Xem lịch sử bệnh nhân</a>
+                <a href="/doctor/patient_list" class="nav-link px-0 align-middle ">
+                    Lập phiếu khám</a>
             </li>
+            {% elif session['user_role'] == 5 %}
             <li>
-                <a href="/show_result"  class="nav-link px-0 align-middle">
-                    Lập danh sách khám</a>
+                <a href="/cashier" class="nav-link px-0 align-middle">
+                    Thanh toán hóa đơn</a>
+            </li>
 
-            </li>
+
+            {% endif %}
+            {% endif %}
             <li>
                 <a href="{{ url_for('logout') }}" class="nav-link px-0 align-middle">
                     Đăng xuất </a>
             </li>
             <li><!-- Button to Open the Modal -->
-<!--                <button class="btn  btn-dkkham" data-bs-toggle="modal" data-bs-target="#myModal">-->
-<!--                    Đăng kí lịch khám-->
-<!--                </button>-->
+                <!--                <button class="btn  btn-dkkham" data-bs-toggle="modal" data-bs-target="#myModal">-->
+                <!--                    Đăng kí lịch khám-->
+                <!--                </button>-->
                 <br>
                 {% include 'nurse/modal_dkk.html' %}
 
@@ -43,18 +51,19 @@
         <div class="dropdown pb-4">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30"
+                <img src="https://cdn-icons-png.flaticon.com/512/1177/1177568.png" alt="hugenerd" width="30" height="30"
                      class="rounded-circle">
-                <span class="d-none d-sm-inline mx-1">loser</span>
+                <span class="d-none d-sm-inline mx-1">{{ session['name'] }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
 
 
                 <li><a class="dropdown-item" href="#">Profile</a></li>
-<!--                <li>-->
-<!--                    <hr class="dropdown-divider">-->
-<!--                </li>-->
-                <li><a class="dropdown-item" href="#">Sign out</a></li>
+                <!--                <li>-->
+                <!--                    <hr class="dropdown-divider">-->
+                <!--                </li>-->
+                <!--                <li> <a href="{{ url_for('logout') }}" class="nav-link px-0 align-middle">-->
+                <!--                    Đăng xuất </a></li>-->
             </ul>
         </div>
     </div>
