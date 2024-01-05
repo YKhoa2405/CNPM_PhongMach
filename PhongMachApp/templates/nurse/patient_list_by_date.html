@@ -63,12 +63,10 @@
 
         <!-- Nút lập danh sách khám -->
         <div class="nurse-list-button-date button container d-flex justify-content-center">
-            {% if appointment_count < 30 %}
             <button type="button" class="btn btn-primary btn1 btn-dkkham" data-bs-toggle="modal"
                     data-bs-target="#myModal">
                 Thêm bệnh nhân
             </button>
-            {% endif %}
 
             <!-- Modal -->
             {% include 'nurse/modal_dkk.html' %}

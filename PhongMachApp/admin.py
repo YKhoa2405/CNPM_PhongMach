@@ -1,11 +1,12 @@
+from datetime import datetime
+
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from PhongMachApp import app, db
 from flask_login import current_user, logout_user
 from flask_admin.contrib.sqla import ModelView
 from PhongMachApp.models import (User, MedicineUnit, Medicine, Regulation, UserRole)
-from flask import redirect
-
+from flask import redirect, request
 
 admin = Admin(app=app, name='PhongMach Administration', template_mode='bootstrap4')
 
@@ -44,8 +45,11 @@ class ChangeRegulationView(AdminView):
 class ReportStatistics(AdminBaseView):
     @expose('/')
     def index(self):
+        year = request.args.get('year', datetime.now().month)
+        kw = request.args.get('kw')
         from PhongMachApp import utils
-        return self.render('/admin/report_statistics.html', medicine_chart=utils.medicines_stats())
+        return self.render('/admin/report_statistics.html', medicine_chart=utils.medicines_stats(kw=kw)
+                           , medical_chart=utils.medical_stats(year=year))
 
 
 

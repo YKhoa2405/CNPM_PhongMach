@@ -141,7 +141,7 @@ def examination_form(appointment_id):
     medis = utils.load_medicine(kw=kwmedi)
     patient_info = utils.get_patient_info(appointment_id)
     return render_template('doctor/PhieuKham.html', kw=kwmedi, medicines=medis, name=patient_info['name'],
-                           calendar=patient_info['appointment_date'], appointment_id=appointment_id)
+                           calendar=patient_info['appointment_date'],CCCD=patient_info['CCCD'], appointment_id=appointment_id)
 
 
 # Thêm thuốc
@@ -179,6 +179,7 @@ def delete_cart(medicine_id):
         session['cart'] = cart
     return jsonify(utils.count_cart(cart))
 
+
 #LẬP PHIẾU KHÁM
 @app.route('/create_prescription', methods=['POST'])
 def create_prescription():
@@ -190,13 +191,14 @@ def create_prescription():
             date = request.form.get('date')
             symptom = request.form.get('symptom')
             forecast = request.form.get('forecast')
-
+            CCCD = request.form.get('CCCD')
             new_prescription = PromissoryNote(
                 date=date,
                 symptom=symptom,
                 forecast=forecast,
                 appointment_id=appointment_id,
-                user_id=user_id
+                user_id=user_id,
+                CCCD=CCCD
             )
 
             db.session.add(new_prescription)
@@ -211,14 +213,14 @@ def create_prescription():
             for i in range(len(medicine_ids)):
                 medicine = Medicine.query.get(medicine_ids[i])
                 if medicine:
-                    new_prescription = Prescription(
+                    prescription = Prescription(
                         promissory_id=new_prescription.id,
                         medicine_id=medicine_ids[i],
                         quantity=medicine_quantities[i],
                         usage_detail=usages[i],
                         use_number=1
                     )
-                    medicine_list.append(new_prescription)
+                    medicine_list.append(prescription)
 
             # Thêm tất cả các Prescription vào session cùng một lúc
             db.session.add_all(medicine_list)
@@ -229,8 +231,21 @@ def create_prescription():
         flash(f'LẬP PHIẾU KHÁM THÀNH CÔNG!!!!', 'success')
         return redirect('/doctor/patient_list')
 
-
-
+# lịch sử khám
+@app.route('/fetch_medical_history', methods=['POST'])
+def fetch_medical_history():
+    cccd = request.form.get('cccd')
+    # Truy vấn cơ sở dữ liệu để lấy lịch sử khám bệnh dựa trên CCCD
+    medical_history = PromissoryNote.query.filter_by(CCCD=cccd).all()
+    # Chuyển đổi kết quả thành dạng JSON và trả về cho frontend
+    result = []
+    for history in medical_history:
+        result.append({
+            'date': history.date,
+            'symptom': history.symptom,
+            'forecast': history.forecast
+        })
+    return jsonify(result)
 
 # HIỂN THỊ DANH SÁCH BỆNH NHÂN ĐK
 @app.route('/result', methods=['POST', 'GET'])
@@ -321,7 +336,7 @@ def get_patients_by_date():
     return render_template('nurse/patient_list_by_date.html', appointments=appointments_not_in_list,
                            appointment_count=appointment_count, selected_date=selected_date)
 
-# lập ds khám
+# lập danh sách khám
 @app.route('/appointment_list', methods=['POST'])
 def create_appointment_list():
     # Lấy danh sách bệnh nhân đã được chọn từ session
@@ -395,6 +410,7 @@ def signin_admin():
         login_user(user=user)
     return redirect(utils.get_prev_url())
 
+####
 
 if __name__ == '__main__':
     from PhongMachApp.admin import *

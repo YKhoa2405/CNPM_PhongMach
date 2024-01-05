@@ -7,12 +7,19 @@
     <!-- Links -->
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-            <a class="nav-link{% if current_page == 'index' %} active{% endif %}" href="{{ url_for('index') }}">Trang chủ</a>
+            <a class="nav-link{% if current_page == 'index' %} active{% endif %}" href="{{ url_for('index') }}">Trang
+                chủ</a>
         </li>
+        {% if current_user.is_authenticated %}
         <li class="nav-item">
             <a class="nav-link{% if current_page == 'datLichKham' %} active{% endif %}"
                href="{{ url_for('datLichKham') }}">Đăng ký lịch khám</a>
         </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('user_login', next='datLichKham') }}">Đăng ký lịch khám</a>
+        </li>
+        {% endif%}
     </ul>
 
     <!-- Nút đăng nhập ở bên phải -->
@@ -25,7 +32,6 @@
                     class="fa fa-user"></i> {{ current_user.name }}</a>
             <div class="dropdown-menu">
                 <a class="dropdown-item" href="#">Lịch sử thanh toán</a>
-                <a class="dropdown-item" href="#">Lịch khám</a>
                 <a class="dropdown-item" href="#">Hồ sơ</a>
                 <a class="dropdown-item" href="{{ url_for('logout') }}">Đăng xuất</a>
             </div>
