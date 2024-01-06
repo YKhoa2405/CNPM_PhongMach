@@ -6,7 +6,7 @@ from sqlalchemy import func
 from PhongMachApp.models import UserRole
 from datetime import datetime, date
 from PhongMachApp import app, utils, login, models, db
-from PhongMachApp.models import UserRole, MedicalExamList, Appointment, Prescription, PromissoryNote
+from PhongMachApp.models import UserRole, MedicalExamList, Appointment, Prescription, PromissoryNote, Regulation
 from flask import make_response
 
 app.secret_key = 'Caichyrua11@'
@@ -114,12 +114,21 @@ def datLichKham():
         calendar = request.form.get('calendar')
 
         try:
-            utils.add_lich_kham(name=name, cccd=cccd, gender=gender, sdt=sdt, birthday=birthday, address=address,
-                                calendar=calendar)
-            err_msg = "Đặt lịch khám thành công!"
+            existing_appointments_count = Appointment.query.filter_by(calendar=calendar).count()
+
+            # Truy vấn giá trị patient_quantity từ bảng Regulation
+            regulation = Regulation.query.first()
+            max_appointments_allowed = regulation.patient_quantity
+
+            if existing_appointments_count >= max_appointments_allowed:
+                err_msg = "Lỗi đặt lịch! Đã đủ số lượng đăng kí khám"
+            else:
+                utils.add_lich_kham(name=name, cccd=cccd, gender=gender, sdt=sdt, birthday=birthday, address=address,
+                                    calendar=calendar)
+                err_msg = "Đặt lịch khám thành công!"
         except Exception as e:
             print(e)
-            err_msg = "Đã xảy ra lỗi khi đặt lịch khám."
+            err_msg = "Đã xảy ra lỗi khi đặt lịch!"
     return render_template('datLichKham.html', err_msg=err_msg, current_page='datLichKham')
 
 
@@ -134,6 +143,7 @@ def doctor_patient_list():
     return render_template('doctor/patient_list.html', medical_exams=medical_exams, target_date=today,
                            appointment_ids=appointment_ids)
 
+
 # Lap phieu kham
 @app.route('/examination_form/<int:appointment_id>')
 def examination_form(appointment_id):
@@ -141,7 +151,8 @@ def examination_form(appointment_id):
     medis = utils.load_medicine(kw=kwmedi)
     patient_info = utils.get_patient_info(appointment_id)
     return render_template('doctor/PhieuKham.html', kw=kwmedi, medicines=medis, name=patient_info['name'],
-                           calendar=patient_info['appointment_date'],CCCD=patient_info['CCCD'], appointment_id=appointment_id)
+                           calendar=patient_info['appointment_date'], CCCD=patient_info['CCCD'],
+                           appointment_id=appointment_id)
 
 
 # Thêm thuốc
@@ -180,7 +191,7 @@ def delete_cart(medicine_id):
     return jsonify(utils.count_cart(cart))
 
 
-#LẬP PHIẾU KHÁM
+# LẬP PHIẾU KHÁM
 @app.route('/create_prescription', methods=['POST'])
 def create_prescription():
     if request.method == 'POST':
@@ -231,6 +242,7 @@ def create_prescription():
         flash(f'LẬP PHIẾU KHÁM THÀNH CÔNG!!!!', 'success')
         return redirect('/doctor/patient_list')
 
+
 # lịch sử khám
 @app.route('/fetch_medical_history', methods=['POST'])
 def fetch_medical_history():
@@ -246,6 +258,7 @@ def fetch_medical_history():
             'forecast': history.forecast
         })
     return jsonify(result)
+
 
 # HIỂN THỊ DANH SÁCH BỆNH NHÂN ĐK
 @app.route('/result', methods=['POST', 'GET'])
@@ -269,29 +282,32 @@ def add_patient():
             calendar=calendar
         )
 
-        # Thêm bệnh nhân mới vào cơ sở dữ liệu
+        # Kiểm tra số lượng lịch hẹn cho ngày đã chọn
+        existing_appointments_count = Appointment.query.filter_by(calendar=calendar).count()
+
+        # Truy vấn giá trị patient_quantity từ bảng Regulation
+        regulation = Regulation.query.first()
+        max_appointments_allowed = regulation.patient_quantity
+
+        if existing_appointments_count >= max_appointments_allowed:
+            flash('Đã đủ số lượng khám bệnh cho ngày này. Vui lòng chọn ngày khác.', 'danger')
+            return redirect(url_for('show_result'))
+
+        # Thêm lịch hẹn mới vào cơ sở dữ liệu
         db.session.add(new_appointment)
         db.session.commit()
+        flash('Thêm thông tin khám bệnh nhân thành công', 'success')
+        return redirect(url_for('show_result'))
 
-        # Lấy danh sách bệnh nhân từ cơ sở dữ liệu
-        appointments = Appointment.query.all()
-
-        # # Cập nhật lại ID cho từng bệnh nhân
-        # new_id = 1
-        # for appoinment in appointments:
-        #     appoinment.id = new_id
-        #     new_id += 1
-
-    db.session.commit()
-    flash('THÊM THÔNG TIN KHÁM BỆNH NHÂN THÀNH CÔNG', 'success')
-    return redirect(url_for('show_result'))
 
 @app.route('/show_result')
 def show_result():
     appointments = Appointment.query.all()
     appointment_list = MedicalExamList.query.all()  # Danh sách đã lập
-    filtered_appointments = [appointment for appointment in appointments if appointment.id not in [item.appointment_id for item in appointment_list]]
+    filtered_appointments = [appointment for appointment in appointments if
+                             appointment.id not in [item.appointment_id for item in appointment_list]]
     return render_template('nurse/patient_list.html', appointments=filtered_appointments)
+
 
 # xóa bệnh nhân khỏi db
 @app.route('/patients/<int:appointment_id>/delete', methods=['POST'])
@@ -335,6 +351,7 @@ def get_patients_by_date():
 
     return render_template('nurse/patient_list_by_date.html', appointments=appointments_not_in_list,
                            appointment_count=appointment_count, selected_date=selected_date)
+
 
 # lập danh sách khám
 @app.route('/appointment_list', methods=['POST'])
@@ -388,10 +405,9 @@ def create_appointment_list():
 #  thu ngân
 @app.route("/cashier")
 def cashier_home():
-    all_notes = PromissoryNote.query.all()#truy vấn phiếu khám
+    all_notes = PromissoryNote.query.all()  # truy vấn phiếu khám
     # prescriptions = Prescription.query.all()#truy phấn phiếu thuôcs
     return render_template('cashier/cashier_home.html', all_notes=all_notes)
-
 
 
 @app.route("/cashier/pay_bill")
@@ -409,6 +425,7 @@ def signin_admin():
     if user:
         login_user(user=user)
     return redirect(utils.get_prev_url())
+
 
 ####
 
