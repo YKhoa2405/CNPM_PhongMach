@@ -36,7 +36,6 @@ class MedicineUnit(Basemodel):
         return self.name
 
 
-# Thuốc
 class Medicine(Basemodel):
     name = Column(String(50), unique=True, default='', nullable=False)
     amount = Column(Integer, default=0)
@@ -52,6 +51,9 @@ class Medicine(Basemodel):
 
     def __str__(self):
         return self.name
+
+
+    #phiếu khám
 class PromissoryNote(Basemodel):
     __tablename__ = 'promissory_note'
 
@@ -65,6 +67,9 @@ class PromissoryNote(Basemodel):
     appointment = relationship("Appointment", backref="promissory_notes")
 
     prescriptions = relationship("Prescription", backref="promissory_note")# đơn thuốc
+
+
+    #chi tiết toa thuốc
 class Prescription(db.Model):
     __tablename__ = 'prescription'
 
@@ -80,7 +85,7 @@ class Prescription(db.Model):
     medicine = db.relationship('Medicine')
 
 
-
+#lịch hẹn
 class Appointment(Basemodel):  # LỊCH HẸN
     __tablename__ = 'appointment'
     id = db.Column(db.Integer, primary_key=True)

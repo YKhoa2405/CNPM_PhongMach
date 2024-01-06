@@ -79,7 +79,7 @@ def user_login():
                 return render_template('nurse/nurse_home.html')
             elif user.user_role == UserRole.CASHIER:
                 # Add the corresponding action for nurses, for example:
-                return render_template('cashier/cashier_home.html')
+                return redirect('/cashier')
             else:
                 return redirect(url_for('index'))
         else:
@@ -316,8 +316,6 @@ def get_patients_by_date():
 
 
 # lập ds khám
-
-# lập ds khám
 @app.route('/appointment_list', methods=['POST'])
 def create_appointment_list():
     # Lấy danh sách bệnh nhân đã được chọn từ session
@@ -374,10 +372,26 @@ def cashier_home():
     return render_template('cashier/cashier_home.html', all_notes=all_notes)
 
 
+@app.route('/pay_info/<appointment_id>', methods=['GET'])
+def pay_info(appointment_id):
+    promissory_note = PromissoryNote.query.filter_by(appointment_id=appointment_id).first()
 
-@app.route("/cashier/pay_bill")
-def pay_bill():
-    return render_template('cashier/pay_bill.html')
+    if promissory_note:
+        patient_name = promissory_note.appointment.name
+        exam_date = promissory_note.appointment.calendar
+
+        # Lấy danh sách toa thuốc từ phiếu khám
+        prescriptions = Prescription.query.filter_by(promissory_id=promissory_note.id).all()
+        exam_fee = Regulation.query.first().examination_fee
+        medicine_cost = sum(p.quantity * p.medicine.price for p in prescriptions)
+        total_cost = exam_fee + medicine_cost
+
+        return render_template('cashier/pay_bill.html',
+                               patient_name=patient_name,
+                               exam_date=exam_date,
+                               exam_fee=exam_fee,
+                               medicine_cost=medicine_cost,
+                               total_cost=total_cost)
 
 
 # admin

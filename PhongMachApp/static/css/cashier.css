@@ -1,6 +1,41 @@
-body{
+.container-left {
+    width: 20%;
+    float: left;
+}
 
-color:black;}
+.container-right {
+    width: 70%;
+    float: left;
+}
+.text-center{
+    text-align: center;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 20px;
+    margin-top: 50px;
+}
 
-table{
-    text-align:center}
+td {
+    border: 1px solid #dddddd;
+    padding: 8px;
+}
+.title{
+    text-align:center;
+    color: blue;
+}
+.issue-invoice{
+    margin-left: 944px;
+    margin-top: 25px;
+}
+.issue-invoice button{
+    padding: 10px;
+    color: green;
+    font-weight: bold;
+    font-size: 15px;
+}
+a{
+    text-decoration: none;
+    color: white;
+}

@@ -23,9 +23,9 @@
         {% include 'cashier/header.html' %}
 
         <!--body-->
-        <div class=" col py-3" style="margin-left:400px;">
-            <h1 class="text-header text-dark text-center"> CHÀO MỪNG BẠN ĐẾN VỚI TRANG THU NGÂN</h1>
-            <p class="text-dark text-center"> DANH SÁCH HÓA ĐƠN THANH TOÁN </p>
+        <div class=" col py-3" style="margin-left:300px;">
+<!--            <h1 class="text-header text-dark text-center"> CHÀO MỪNG BẠN ĐẾN VỚI TRANG THU NGÂN</h1>-->
+            <h2 class="text-dark text-center mt-5"> DANH SÁCH HÓA ĐƠN THANH TOÁN </h2>
 
             <table border="1" class="container table table-striped table-bordered">
                 <thead class="bg-info">
@@ -47,7 +47,7 @@
                     <td>{{ note.symptom }}</td>
                     <td>{{ note.forecast }}</td>
                     <td>
-                        <button type="button" class="btn btn-success">Thanh toán</button>
+                        <button type="button" class="btn btn-success"><a href="{{ url_for('pay_info', appointment_id=note.appointment_id) }}">Thanh toán</a></button>
                     </td>
                 </tr>
                 {% endfor %}
