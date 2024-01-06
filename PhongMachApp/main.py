@@ -1,4 +1,6 @@
 import math, re
+
+import cloudinary.uploader
 from flask import render_template, request, redirect, url_for, session, jsonify, flash
 from flask_login import login_user, logout_user
 from sqlalchemy import func
@@ -44,8 +46,10 @@ def user_register():
         phone = request.form.get('phone')
         password = request.form.get('password')
         confirm = request.form.get('confirm')
+        avatar_path = None
 
         if password.strip() == confirm.strip():
+
             # Check if email is in a valid format
             if not is_valid_email(email):
                 err_msg = "Định dạng email không hợp lệ."
@@ -54,8 +58,12 @@ def user_register():
                 if utils.get_email(email):
                     err_msg = "Email đã được đăng ký. Vui lòng chọn email khác."
                 else:
+                    avatar = request.files.get('avatar')
+                    if avatar:
+                        res = cloudinary.uploader.upload(avatar)
+                        avatar_path = res['secure_url']
                     # Add the new user to the database
-                    utils.add_user(name=name, email=email, password=password, phone=phone)
+                    utils.add_user(name=name, email=email, password=password, phone=phone, avatar=avatar_path)
                     return redirect(url_for('user_login'))
         else:
             err_msg = "Mật khẩu và xác nhận mật khẩu không khớp."
@@ -101,9 +109,15 @@ def user_load(user_id):
     return utils.get_user_by_id(user_id=user_id)
 
 
+@app.route("/profile")
+def profile():
+    return render_template('profile.html')
+
+
 @app.route("/datLichKham", methods=['get', 'post'])
 def datLichKham():
     err_msg = ""
+    err_msg1 = ""
     if request.method.__eq__('POST'):
         name = request.form.get('name')
         cccd = request.form.get('cccd')
@@ -119,8 +133,8 @@ def datLichKham():
             err_msg = "Đặt lịch khám thành công!"
         except Exception as e:
             print(e)
-            err_msg = "Đã xảy ra lỗi khi đặt lịch khám."
-    return render_template('datLichKham.html', err_msg=err_msg, current_page='datLichKham')
+            err_msg1 = "Đã xảy ra lỗi khi đặt lịch khám."
+    return render_template('datLichKham.html', err_msg=err_msg, err_msg1=err_msg1, current_page='datLichKham')
 
 
 # Danh sách bệnh nhân khám theo ngày đươcj y tá lọc
@@ -134,6 +148,7 @@ def doctor_patient_list():
     return render_template('doctor/patient_list.html', medical_exams=medical_exams, target_date=today,
                            appointment_ids=appointment_ids)
 
+
 # Lap phieu kham
 @app.route('/examination_form/<int:appointment_id>')
 def examination_form(appointment_id):
@@ -141,7 +156,8 @@ def examination_form(appointment_id):
     medis = utils.load_medicine(kw=kwmedi)
     patient_info = utils.get_patient_info(appointment_id)
     return render_template('doctor/PhieuKham.html', kw=kwmedi, medicines=medis, name=patient_info['name'],
-                           calendar=patient_info['appointment_date'],CCCD=patient_info['CCCD'], appointment_id=appointment_id)
+                           calendar=patient_info['appointment_date'], CCCD=patient_info['CCCD'],
+                           appointment_id=appointment_id)
 
 
 # Thêm thuốc
@@ -180,7 +196,7 @@ def delete_cart(medicine_id):
     return jsonify(utils.count_cart(cart))
 
 
-#LẬP PHIẾU KHÁM
+# LẬP PHIẾU KHÁM
 @app.route('/create_prescription', methods=['POST'])
 def create_prescription():
     if request.method == 'POST':
@@ -231,6 +247,7 @@ def create_prescription():
         flash(f'LẬP PHIẾU KHÁM THÀNH CÔNG!!!!', 'success')
         return redirect('/doctor/patient_list')
 
+
 # lịch sử khám
 @app.route('/fetch_medical_history', methods=['POST'])
 def fetch_medical_history():
@@ -246,6 +263,7 @@ def fetch_medical_history():
             'forecast': history.forecast
         })
     return jsonify(result)
+
 
 # HIỂN THỊ DANH SÁCH BỆNH NHÂN ĐK
 @app.route('/result', methods=['POST', 'GET'])
@@ -286,12 +304,15 @@ def add_patient():
     flash('THÊM THÔNG TIN KHÁM BỆNH NHÂN THÀNH CÔNG', 'success')
     return redirect(url_for('show_result'))
 
+
 @app.route('/show_result')
 def show_result():
     appointments = Appointment.query.all()
     appointment_list = MedicalExamList.query.all()  # Danh sách đã lập
-    filtered_appointments = [appointment for appointment in appointments if appointment.id not in [item.appointment_id for item in appointment_list]]
+    filtered_appointments = [appointment for appointment in appointments if
+                             appointment.id not in [item.appointment_id for item in appointment_list]]
     return render_template('nurse/patient_list.html', appointments=filtered_appointments)
+
 
 # xóa bệnh nhân khỏi db
 @app.route('/patients/<int:appointment_id>/delete', methods=['POST'])
@@ -335,6 +356,7 @@ def get_patients_by_date():
 
     return render_template('nurse/patient_list_by_date.html', appointments=appointments_not_in_list,
                            appointment_count=appointment_count, selected_date=selected_date)
+
 
 # lập danh sách khám
 @app.route('/appointment_list', methods=['POST'])
@@ -388,10 +410,9 @@ def create_appointment_list():
 #  thu ngân
 @app.route("/cashier")
 def cashier_home():
-    all_notes = PromissoryNote.query.all()#truy vấn phiếu khám
+    all_notes = PromissoryNote.query.all()  # truy vấn phiếu khám
     # prescriptions = Prescription.query.all()#truy phấn phiếu thuôcs
     return render_template('cashier/cashier_home.html', all_notes=all_notes)
-
 
 
 @app.route("/cashier/pay_bill")
@@ -409,6 +430,7 @@ def signin_admin():
     if user:
         login_user(user=user)
     return redirect(utils.get_prev_url())
+
 
 ####
 
