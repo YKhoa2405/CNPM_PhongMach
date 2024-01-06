@@ -17,7 +17,8 @@ def add_user(name, email, password, phone, **kwargs):
     user = User(name=name.strip(),
                 email=email.strip(),
                 phone=phone.strip(),
-                password=password)
+                password=password,
+                avatar=kwargs.get('avatar'))
     db.session.add(user)
     db.session.commit()
 
@@ -152,7 +153,7 @@ def get_patient_info(appointment_id):
     appointment = Appointment.query.filter_by(id=appointment_id).first()
     if appointment:
         return {'name': appointment.name, 'appointment_date': appointment.calendar, 'CCCD': appointment.cccd}
-    return {'name': None, 'appointment_date': None, 'CCCD':None}
+    return {'name': None, 'appointment_date': None, 'CCCD': None}
 
 
 def get_unit_name_by_id(unit_id):
@@ -164,8 +165,8 @@ def get_unit_name_by_id(unit_id):
 
 # thống kê, báo cáo
 def medicines_stats(kw):
-    m = db.session.query(Medicine.id, Medicine.name, func.sum(Prescription.quantity), func.sum(Prescription.use_number))\
-        .join(Prescription, Prescription.medicine_id.__eq__(Medicine.id))\
+    m = db.session.query(Medicine.id, Medicine.name, func.sum(Prescription.quantity), func.sum(Prescription.use_number)) \
+        .join(Prescription, Prescription.medicine_id.__eq__(Medicine.id)) \
         .group_by(Medicine.id, Medicine.name)
 
     if kw:
@@ -177,12 +178,16 @@ def medicines_stats(kw):
 def medical_stats(year):
     medi = db.session.query(
         func.extract('month', PromissoryNote.date),
-        func.count(PromissoryNote.id)
-    ).group_by(func.extract('month', PromissoryNote.date)).filter(extract('year', PromissoryNote.date).__eq__(year)).order_by(extract('month', PromissoryNote.date))
+        func.count(PromissoryNote.id),
+    ).group_by(func.extract('month', PromissoryNote.date)).order_by(extract('month', PromissoryNote.date))
+
+    if year:
+        medi = medi.filter(func.extract('year', PromissoryNote.date) == year)
 
     return medi.all()
 
 
+<<<<<<< HEAD
 # def is_patient_quantity_exceeded(list_code, patient_quantity):
 #     # Lấy số lượng bệnh nhân đã đăng kí trong danh sách mới
 #     current_patient_count = MedicalExamList.query.filter_by(list_code=list_code).count()
@@ -195,3 +200,9 @@ def create_appointment(appointment_info):
     if medical_exam_list.is_patient_quantity_exceeded():
         # Hiển thị thông báo không thể đăng ký cuộc hẹn do đủ số lượng bệnh nhân
         return flash(f"Không thể đăng ký cuộc hẹn vì đã đủ số lượng bệnh nhân trong danh sách khám này.")
+=======
+def is_patient_quantity_exceeded(list_code, patient_quantity):
+    # Lấy số lượng bệnh nhân đã đăng kí trong danh sách mới
+    current_patient_count = MedicalExamList.query.filter_by(list_code=list_code).count()
+    return current_patient_count >= patient_quantity
+>>>>>>> fc2ecb69077e8f6b5b355b8df7c3c42ff46ba06e

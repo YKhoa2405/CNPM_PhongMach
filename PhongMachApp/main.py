@@ -1,4 +1,6 @@
 import math, re
+
+import cloudinary.uploader
 from flask import render_template, request, redirect, url_for, session, jsonify, flash
 from flask_login import login_user, logout_user
 from sqlalchemy import func
@@ -44,8 +46,10 @@ def user_register():
         phone = request.form.get('phone')
         password = request.form.get('password')
         confirm = request.form.get('confirm')
+        avatar_path = None
 
         if password.strip() == confirm.strip():
+
             # Check if email is in a valid format
             if not is_valid_email(email):
                 err_msg = "Định dạng email không hợp lệ."
@@ -54,8 +58,12 @@ def user_register():
                 if utils.get_email(email):
                     err_msg = "Email đã được đăng ký. Vui lòng chọn email khác."
                 else:
+                    avatar = request.files.get('avatar')
+                    if avatar:
+                        res = cloudinary.uploader.upload(avatar)
+                        avatar_path = res['secure_url']
                     # Add the new user to the database
-                    utils.add_user(name=name, email=email, password=password, phone=phone)
+                    utils.add_user(name=name, email=email, password=password, phone=phone, avatar=avatar_path)
                     return redirect(url_for('user_login'))
         else:
             err_msg = "Mật khẩu và xác nhận mật khẩu không khớp."
@@ -101,9 +109,15 @@ def user_load(user_id):
     return utils.get_user_by_id(user_id=user_id)
 
 
+@app.route("/profile")
+def profile():
+    return render_template('profile.html')
+
+
 @app.route("/datLichKham", methods=['get', 'post'])
 def datLichKham():
     err_msg = ""
+    err_msg1 = ""
     if request.method.__eq__('POST'):
         name = request.form.get('name')
         cccd = request.form.get('cccd')
@@ -128,8 +142,13 @@ def datLichKham():
                 err_msg = "Đặt lịch khám thành công!"
         except Exception as e:
             print(e)
+<<<<<<< HEAD
             err_msg = "Đã xảy ra lỗi khi đặt lịch!"
     return render_template('datLichKham.html', err_msg=err_msg, current_page='datLichKham')
+=======
+            err_msg1 = "Đã xảy ra lỗi khi đặt lịch khám."
+    return render_template('datLichKham.html', err_msg=err_msg, err_msg1=err_msg1, current_page='datLichKham')
+>>>>>>> fc2ecb69077e8f6b5b355b8df7c3c42ff46ba06e
 
 
 # Danh sách bệnh nhân khám theo ngày đươcj y tá lọc
@@ -298,6 +317,7 @@ def add_patient():
         db.session.commit()
         flash('Thêm thông tin khám bệnh nhân thành công', 'success')
         return redirect(url_for('show_result'))
+
 
 
 @app.route('/show_result')

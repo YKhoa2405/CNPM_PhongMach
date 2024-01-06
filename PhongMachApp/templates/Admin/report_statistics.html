@@ -2,11 +2,11 @@
 
 {% block content %}
 <h1 class="text-center">THỐNG KÊ BÁO CÁO</h1>
-<!--<div class="content-wrap">-->
-<!--    <button onclick="showContent('content1')">Doanh thu theo tháng</button>-->
-<!--    <button onclick="showContent('content2')">Tần suất khám</button>-->
-<!--    <button onclick="showContent('content3')">Tần suất sử dụng thuốc</button>-->
-<!--</div>-->
+<div class="content-wrap">
+    <button onclick="showContent('content1')">Doanh thu theo tháng</button>
+    <button onclick="showContent('content2')">Tần suất khám</button>
+    <button onclick="showContent('content3')">Tần suất sử dụng thuốc</button>
+</div>
 <!--Doanh thu theo tháng-->
 <div class="container" id="content1" style="margin-top:20px;">
     <div class="title">Doanh thu theo tháng</div>
@@ -34,9 +34,23 @@
         </div>
     </div>
 </div>
+<hr>
 <!--Tần suất khám-->
 <div class="container" id="content2" style="margin-top:20px;">
     <div class="title">Tần suất khám</div>
+    <form id="searchForm">
+        <div class="form-group" style="display:flex">
+            <input type="number" min="2000" max="2050"
+                   name="year"
+                   class="form-control" placeholder="Nhập năm...">
+            <input type="submit" value="Thống kê" class="btn btn-primary">
+        </div>
+    </form>
+    {% if medical_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ medical_message }}
+    </div>
+    {% else %}
     <div class="row">
         <div class="col-md-6 col-xs-12">
             <table class="table table-striped">
@@ -48,43 +62,40 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% set total_patients = 0 %}
-
-                {% for medi in medical_chart %}
-                {% set total_patients = total_patients + medi[1]|int %}
-
-                {% endfor %}
-
+                {% set total_medi = medical_chart|map(attribute=1)|sum %}
                 {% for medi in medical_chart %}
                 <tr>
                     <td>{{ medi[0] }}</td>
                     <td>{{ medi[1] }}</td>
-                    <td>
-                        <!--                        {% set ratio = (medi[1] / total_patients * 100) if total_patients > 0 else 0 %}-->
-                        {{ total_patients }}%
-                    </td>
+                    <td>{{ (medi[1] / total_medi) * 100 }}%</td>
                 </tr>
                 {% endfor %}
-
                 </tbody>
             </table>
         </div>
         <div class="col-md-6 col-xs-12">
-            <form>
-                <div class="form-group">
-                    <input type="number" min="2020" max="3000"
-                           name="year"
-                           class="form-control" placeholder="Nhập năm...">
-                </div>
-                <input type="submit" value="Thống kê" class="btn btn-primary">
-            </form>
             <canvas id="medicalChart"></canvas>
         </div>
     </div>
+    {% endif %}
 </div>
+<hr>
 <!--tần suất sử dụng thuốc-->
 <div class="container " id="content3" style="margin-top:20px;">
     <div class="title">Tần suất sử dụng thuốc</div>
+    <form>
+        <div class="form-group" style="display:flex">
+            <input type="text"
+                   name="kw"
+                   class="form-control" placeholder="Nhập tên thuốc...">
+            <input type="submit" value="Thống kê" class="btn btn-primary">
+        </div>
+    </form>
+    {% if medicine_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ medicine_message }}
+    </div>
+    {% else %}
     <div class="row">
         <div class="col-md-6 col-xs-12">
             <table class="table table-striped">
@@ -110,17 +121,11 @@
             </table>
         </div>
         <div class="col-md-6 col-xs-12">
-            <form>
-                <div class="form-group">
-                    <input type="text"
-                           name="kw"
-                           class="form-control" placeholder="Nhập tên thuốc...">
-                </div>
-                <input type="submit" value="Thống kê" class="btn btn-primary">
-            </form>
             <canvas id="medicineChart"></canvas>
         </div>
     </div>
+    {% endif %}
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -182,18 +187,15 @@
    }
 </script>
 
-<!--<script>-->
-<!--    function showContent(contentId) {-->
-<!--      document.getElementById('content1').style.display = 'none';-->
-<!--      document.getElementById('content2').style.display = 'none';-->
-<!--      document.getElementById('content3').style.display = 'none';-->
+<script>
+    function showContent(contentId) {
+      document.getElementById('content1').style.display = 'none';
+      document.getElementById('content2').style.display = 'none';
+      document.getElementById('content3').style.display = 'none';
 
-<!--      document.getElementById(contentId).style.display = 'block';-->
-<!--    }-->
-<!--</script>-->
-
-
-
+      document.getElementById(contentId).style.display = 'block';
+    }
+</script>
 
 
 {% endblock %}
