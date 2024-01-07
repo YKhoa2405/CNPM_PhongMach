@@ -52,14 +52,13 @@ class Medicine(Basemodel):
 
     def __str__(self):
         return self.name
-<<<<<<< HEAD
+
 
 
     #phiếu khám
-class PromissoryNote(Basemodel):
-=======
+
 class PromissoryNote(Basemodel):#PHIẾU KHÁM
->>>>>>> 57ada648690121edc4fd74391be55557bcf962d5
+
     __tablename__ = 'promissory_note'
 
     date = Column(Date, nullable=False)
@@ -73,14 +72,13 @@ class PromissoryNote(Basemodel):#PHIẾU KHÁM
     appointment = relationship("Appointment", backref="promissory_notes")
 
     prescriptions = relationship("Prescription", backref="promissory_note")# đơn thuốc
-<<<<<<< HEAD
+
 
 
     #chi tiết toa thuốc
-class Prescription(db.Model):
-=======
+
 class Prescription(db.Model):# chi tiết phiếu thuốc
->>>>>>> 57ada648690121edc4fd74391be55557bcf962d5
+
     __tablename__ = 'prescription'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -124,7 +122,14 @@ class MedicalExamList(db.Model):  # Appointment list
 
 
 # Hóa đơn
+class Payment(Basemodel):
+    __tablename__ = 'payment'
 
+    promissory_note_id = db.Column(db.Integer, db.ForeignKey('promissory_note.id'))
+    total_cost = db.Column(db.Float)
+    paid_date = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    promissory_note = db.relationship('PromissoryNote', backref='payments')
 
 # amin quy dinh
 class Regulation(Basemodel):

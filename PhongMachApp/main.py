@@ -5,7 +5,7 @@ from flask import render_template, request, redirect, url_for, session, jsonify,
 from flask_login import login_user, logout_user
 from sqlalchemy import func
 
-from PhongMachApp.models import UserRole
+from PhongMachApp.models import UserRole, Payment
 from datetime import datetime, date
 from PhongMachApp import app, utils, login, models, db
 from PhongMachApp.models import UserRole, MedicalExamList, Appointment, Prescription, PromissoryNote, Regulation
@@ -86,15 +86,10 @@ def user_login():
             if user.user_role == UserRole.DOCTOR:
                 return redirect('doctor/patient_list')
             elif user.user_role == UserRole.NURSE:
-                # Add the corresponding action for nurses, for example:
                 return redirect('show_result')
             elif user.user_role == UserRole.CASHIER:
-                # Add the corresponding action for nurses, for example:
-<<<<<<< HEAD
                 return redirect('/cashier')
-=======
-                return redirect('cashier')
->>>>>>> 57ada648690121edc4fd74391be55557bcf962d5
+
             else:
                 return redirect(url_for('index'))
         else:
@@ -146,13 +141,8 @@ def datLichKham():
                 err_msg = "Đặt lịch khám thành công!"
         except Exception as e:
             print(e)
-<<<<<<< HEAD
             err_msg = "Đã xảy ra lỗi khi đặt lịch!"
     return render_template('datLichKham.html', err_msg=err_msg, current_page='datLichKham')
-=======
-            err_msg1 = "Đã xảy ra lỗi khi đặt lịch khám."
-    return render_template('datLichKham.html', err_msg=err_msg, err_msg1=err_msg1, current_page='datLichKham')
->>>>>>> fc2ecb69077e8f6b5b355b8df7c3c42ff46ba06e
 
 
 # Danh sách bệnh nhân khám theo ngày đươcj y tá lọc
@@ -377,11 +367,8 @@ def get_patients_by_date():
                            appointment_count=appointment_count, selected_date=selected_date)
 
 
-<<<<<<< HEAD
-# lập ds khám
-=======
+
 # lập danh sách khám
->>>>>>> 57ada648690121edc4fd74391be55557bcf962d5
 @app.route('/appointment_list', methods=['POST'])
 def create_appointment_list():
     # Lấy danh sách bệnh nhân đã được chọn từ session
@@ -438,7 +425,6 @@ def cashier_home():
     return render_template('cashier/cashier_home.html', all_notes=all_notes)
 
 
-<<<<<<< HEAD
 @app.route('/pay_info/<appointment_id>', methods=['GET'])
 def pay_info(appointment_id):
     promissory_note = PromissoryNote.query.filter_by(appointment_id=appointment_id).first()
@@ -446,24 +432,26 @@ def pay_info(appointment_id):
     if promissory_note:
         patient_name = promissory_note.appointment.name
         exam_date = promissory_note.appointment.calendar
-
+        promissory_note_id = promissory_note.id
+        paid_date = date.today()
         # Lấy danh sách toa thuốc từ phiếu khám
         prescriptions = Prescription.query.filter_by(promissory_id=promissory_note.id).all()
         exam_fee = Regulation.query.first().examination_fee
         medicine_cost = sum(p.quantity * p.medicine.price for p in prescriptions)
         total_cost = exam_fee + medicine_cost
 
+        #Khi thanh toán lưu về db
+        payment = Payment(promissory_note_id=promissory_note.id, total_cost=total_cost)
+        db.session.add(payment)
+        db.session.commit()
         return render_template('cashier/pay_bill.html',
                                patient_name=patient_name,
                                exam_date=exam_date,
+                               promissory_note_id=promissory_note_id,
+                               paid_date=paid_date,
                                exam_fee=exam_fee,
                                medicine_cost=medicine_cost,
                                total_cost=total_cost)
-=======
-@app.route("/cashier/pay_bill")
-def pay_bill():
-    return render_template('cashier/pay_bill.html')
->>>>>>> 57ada648690121edc4fd74391be55557bcf962d5
 
 
 # admin

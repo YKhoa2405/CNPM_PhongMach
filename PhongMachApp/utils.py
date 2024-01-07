@@ -187,7 +187,6 @@ def medical_stats(year):
     return medi.all()
 
 
-<<<<<<< HEAD
 # def is_patient_quantity_exceeded(list_code, patient_quantity):
 #     # Lấy số lượng bệnh nhân đã đăng kí trong danh sách mới
 #     current_patient_count = MedicalExamList.query.filter_by(list_code=list_code).count()
@@ -200,9 +199,7 @@ def create_appointment(appointment_info):
     if medical_exam_list.is_patient_quantity_exceeded():
         # Hiển thị thông báo không thể đăng ký cuộc hẹn do đủ số lượng bệnh nhân
         return flash(f"Không thể đăng ký cuộc hẹn vì đã đủ số lượng bệnh nhân trong danh sách khám này.")
-=======
 def is_patient_quantity_exceeded(list_code, patient_quantity):
     # Lấy số lượng bệnh nhân đã đăng kí trong danh sách mới
     current_patient_count = MedicalExamList.query.filter_by(list_code=list_code).count()
     return current_patient_count >= patient_quantity
->>>>>>> fc2ecb69077e8f6b5b355b8df7c3c42ff46ba06e

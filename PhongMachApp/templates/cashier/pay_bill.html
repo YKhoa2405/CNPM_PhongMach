@@ -21,12 +21,16 @@
                     <td>Họ tên: {{ patient_name }}</td>
                     <td>Ngày khám: {{ exam_date }}</td>
                 </tr>
+                <tr>
+                    <td>Mã phiếu: {{ promissory_note_id }}</td>
+                    <td>Ngày thanh toán: {{ paid_date }}</td>
+                </tr>
                  <tr>
-                    <td>Tiền khám:  {{ exam_fee }}</td>
-                    <td>Tiền thuốc: {{ medicine_cost }}</td>
+                    <td>Tiền khám:  {{ exam_fee }} VND</td>
+                    <td>Tiền thuốc: {{ medicine_cost }} VND</td>
                 </tr>
                 <tr>
-                    <td colspan="2">Tổng tiền: {{ total_cost }}</td>
+                    <td colspan="2">Tổng tiền: {{ total_cost }} VND</td>
                 </tr>
             </table>
         </div>

@@ -35,7 +35,7 @@ class MedicineView(AdminView):
 class UserView(AdminView):
     create_modal = True
     column_list = ['name', 'email', 'password', 'user_role']
-
+    column_searchable_list = ['name','user_role']
 
 class ChangeRegulationView(AdminView):
     create_modal = True
