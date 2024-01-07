@@ -28,11 +28,16 @@
     <ul class="navbar-nav ml-auto">
         {% if current_user.is_authenticated %}
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" style="color:white;" href="#" id="navbardrop" data-toggle="dropdown"><i
-                    class="fa fa-user"></i> {{ current_user.name }}</a>
+            <a class="nav-link dropdown-toggle" style="color:white;" href="#" id="navbardrop" data-toggle="dropdown">
+                {% if current_user.avatar %}
+                <img src="{{ current_user.avatar }}" width="40px" height="40px" class="rounded-circle">
+                {% else %}
+                <i class="fa fa-user"></i>
+                {% endif %}
+                {{ current_user.name }}</a>
             <div class="dropdown-menu">
                 <a class="dropdown-item" href="#">Lịch sử thanh toán</a>
-                <a class="dropdown-item" href="#">Hồ sơ</a>
+                <a class="dropdown-item" href="{{ url_for('profile') }}">Hồ sơ</a>
                 <a class="dropdown-item" href="{{ url_for('logout') }}">Đăng xuất</a>
             </div>
         </li>

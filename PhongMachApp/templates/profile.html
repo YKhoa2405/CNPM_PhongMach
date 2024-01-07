@@ -1,0 +1,65 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Hồ sơ{% endblock %}
+
+{% block content %}
+<div class="container emp-profile">
+    <form>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-img">
+                    {% if current_user.avatar %}
+                    <img src="{{ current_user.avatar }}">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='image/member.png') }} " >
+                    {% endif %}
+                    <div class="file btn btn-lg btn-primary">
+                        Đổi ảnh đại diện
+                        <input type="file" name="avatar" id="avatar"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="profile-head">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Mã bệnh nhân:</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ current_user.id }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Họ và tên:</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ current_user.name }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Email:</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ current_user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Số điện thoại:</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ current_user.phone }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile"/>
+            </div>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

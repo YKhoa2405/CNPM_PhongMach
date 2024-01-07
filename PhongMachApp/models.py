@@ -25,6 +25,7 @@ class User(Basemodel, UserMixin):
     email = Column(String(50), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
     phone = Column(String(50), nullable=False, unique=True)
+    avatar = Column(String(100))
     user_role = Column(Enum(UserRole), default=UserRole.USER)
 
 
@@ -51,10 +52,14 @@ class Medicine(Basemodel):
 
     def __str__(self):
         return self.name
+<<<<<<< HEAD
 
 
     #phiếu khám
 class PromissoryNote(Basemodel):
+=======
+class PromissoryNote(Basemodel):#PHIẾU KHÁM
+>>>>>>> 57ada648690121edc4fd74391be55557bcf962d5
     __tablename__ = 'promissory_note'
 
     date = Column(Date, nullable=False)
@@ -62,15 +67,20 @@ class PromissoryNote(Basemodel):
     forecast = Column(String(100), nullable=False)# chẩn đoán
     user_id = Column(Integer, ForeignKey('user.id'))# id nhân viên
     user = relationship("User", backref="promissory_notes")
+    CCCD = Column(String(50), nullable=False)
 
     appointment_id = Column(Integer, ForeignKey('appointment.id'))# id lịch hẹn
     appointment = relationship("Appointment", backref="promissory_notes")
 
     prescriptions = relationship("Prescription", backref="promissory_note")# đơn thuốc
+<<<<<<< HEAD
 
 
     #chi tiết toa thuốc
 class Prescription(db.Model):
+=======
+class Prescription(db.Model):# chi tiết phiếu thuốc
+>>>>>>> 57ada648690121edc4fd74391be55557bcf962d5
     __tablename__ = 'prescription'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -80,7 +90,7 @@ class Prescription(db.Model):
     use_number = db.Column(db.Integer)
     usage_detail = db.Column(db.String(255))
 
-    # Define relationships if needed
+
     related_promissory_note = relationship("PromissoryNote", backref="related_prescriptions")
     medicine = db.relationship('Medicine')
 
@@ -90,9 +100,9 @@ class Appointment(Basemodel):  # LỊCH HẸN
     __tablename__ = 'appointment'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    cccd = db.Column(db.String(50), nullable=False, unique=True)
+    cccd = db.Column(db.String(50), nullable=False)
     gender = db.Column(db.String(10), nullable=False)
-    sdt = db.Column(db.String(20), nullable=False, unique=True)
+    sdt = db.Column(db.String(20), nullable=False)
     birthday = db.Column(db.Date, nullable=False)
     address = db.Column(db.String(255), nullable=False)
     calendar = db.Column(db.Date, nullable=False)
@@ -123,6 +133,11 @@ class Regulation(Basemodel):
 
     def __str__(self):
         return self.name
+
+    def is_patient_quantity_exceeded(self, list_code):
+        # Lấy số lượng bệnh nhân đã đăng kí trong danh sách mới
+        current_patient_count = MedicalExamList.query.filter_by(list_code=list_code).count()
+        return current_patient_count >= self.patient_quantity
 
 
 if __name__ == '__main__':

@@ -48,10 +48,16 @@ class ReportStatistics(AdminBaseView):
         year = request.args.get('year', datetime.now().month)
         kw = request.args.get('kw')
         from PhongMachApp import utils
-        return self.render('/admin/report_statistics.html', medicine_chart=utils.medicines_stats(kw=kw)
-                           , medical_chart=utils.medical_stats(year=year))
 
+        medicine_stats = utils.medicines_stats(kw=kw)
+        medicine_message = 'Không có dữ liệu, vui lòng nhập lại' if not medicine_stats else None
 
+        medical_stats = utils.medical_stats(year=year)
+        medical_message = 'Không có dữ liệu, vui lòng nhập lại' if not medical_stats else None
+
+        return self.render('/admin/report_statistics.html', medicine_chart=medicine_stats,
+                           medical_chart=medical_stats, medicine_message=medicine_message,
+                           medical_message=medical_message)
 
 
 class LogoutView(BaseView):
@@ -70,4 +76,3 @@ admin.add_view(MedicineView(Medicine, db.session, name='Thuốc'))
 admin.add_view(ChangeRegulationView(Regulation, db.session, name='Thay đổi quy định'))
 admin.add_view(ReportStatistics(name='Thống kê báo cáo'))
 admin.add_view(LogoutView(name='Đăng xuất'))
-

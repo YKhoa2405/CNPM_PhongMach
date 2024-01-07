@@ -3,7 +3,11 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.12 (BTL_CNPM_PhongMach)" />
   </component>
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (CNPM_PhongMach)" project-jdk-type="Python SDK" />
+=======
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (CNPM_PhongMach)" project-jdk-type="Python SDK" />
+>>>>>>> 57ada648690121edc4fd74391be55557bcf962d5
   <component name="PyCharmProfessionalAdvertiser">
     <option name="shown" value="true" />
   </component>
