@@ -1,7 +1,7 @@
 import math, re
 
 import cloudinary.uploader
-from flask import render_template, request, redirect, url_for, session, jsonify, flash
+from flask import render_template, request, redirect, url_for, session, jsonify, flash, abort
 from flask_login import login_user, logout_user
 from sqlalchemy import func
 
@@ -88,7 +88,7 @@ def user_login():
             elif user.user_role == UserRole.NURSE:
                 return redirect('show_result')
             elif user.user_role == UserRole.CASHIER:
-                return redirect('/cashier')
+                return redirect('pay_info/<appointment_id>')
 
             else:
                 return redirect(url_for('index'))
@@ -428,31 +428,31 @@ def cashier_home():
 @app.route('/pay_info/<appointment_id>', methods=['GET'])
 def pay_info(appointment_id):
     promissory_note = PromissoryNote.query.filter_by(appointment_id=appointment_id).first()
+    patient_name = promissory_note.appointment.name
+    exam_date = promissory_note.appointment.calendar
 
-    if promissory_note:
-        patient_name = promissory_note.appointment.name
-        exam_date = promissory_note.appointment.calendar
-        promissory_note_id = promissory_note.id
-        paid_date = date.today()
-        # Lấy danh sách toa thuốc từ phiếu khám
-        prescriptions = Prescription.query.filter_by(promissory_id=promissory_note.id).all()
-        exam_fee = Regulation.query.first().examination_fee
-        medicine_cost = sum(p.quantity * p.medicine.price for p in prescriptions)
-        total_cost = exam_fee + medicine_cost
+    # Lấy danh sách toa thuốc từ phiếu khám
+    prescriptions = Prescription.query.filter_by(promissory_id=promissory_note.id).all()
+    exam_fee = Regulation.query.first().examination_fee
+    medicine_cost = sum(p.quantity * p.medicine.price for p in prescriptions)
+    total_cost = exam_fee + medicine_cost
 
-        #Khi thanh toán lưu về db
-        payment = Payment(promissory_note_id=promissory_note.id, total_cost=total_cost)
-        db.session.add(payment)
-        db.session.commit()
-        return render_template('cashier/pay_bill.html',
-                               patient_name=patient_name,
-                               exam_date=exam_date,
-                               promissory_note_id=promissory_note_id,
-                               paid_date=paid_date,
-                               exam_fee=exam_fee,
-                               medicine_cost=medicine_cost,
-                               total_cost=total_cost)
-
+    # Khi thanh toán lưu về db payment
+    promissory_note_id = promissory_note.id
+    paid_date = date.today()
+    patient_id = promissory_note.user_id
+    nurse_id = current_user.id
+    payment = Payment(promissory_note_id=promissory_note.id, total_cost=total_cost, patient_id=patient_id, paid_date=paid_date, user_id=nurse_id)
+    db.session.add(payment)
+    db.session.commit()
+    return render_template('cashier/pay_bill.html',
+                           patient_name=patient_name,
+                           exam_date=exam_date,
+                           promissory_note_id=promissory_note_id,
+                           paid_date=paid_date,
+                           exam_fee=exam_fee,
+                           medicine_cost=medicine_cost,
+                           total_cost=total_cost)
 
 # admin
 @app.route('/admin/signin_admin', methods=['post'])

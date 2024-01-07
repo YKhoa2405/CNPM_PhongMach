@@ -126,9 +126,12 @@ class Payment(Basemodel):
     __tablename__ = 'payment'
 
     promissory_note_id = db.Column(db.Integer, db.ForeignKey('promissory_note.id'))
-    total_cost = db.Column(db.Float)
-    paid_date = db.Column(db.DateTime, default=db.func.current_timestamp())
+    total_cost = db.Column(db.Float, nullable=False)
+    paid_date = db.Column(db.DateTime, nullable=False)
+    patient_id = Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    user = db.relationship("User", backref="payments")
     promissory_note = db.relationship('PromissoryNote', backref='payments')
 
 # amin quy dinh
